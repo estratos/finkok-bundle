@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<senv:Envelope xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/">
+  <senv:Body>
+    <senv:Fault>
+      <faultcode>soap:Client</faultcode>
+      <faultstring>El servicio no pudo procesar la petición: elemento inesperado</faultstring>
+      <detail>
+        <message>Unmarshalling Error: unexpected element (uri:"", local:"xml")</message>
+      </detail>
+    </senv:Fault>
+  </senv:Body>
+</senv:Envelope>

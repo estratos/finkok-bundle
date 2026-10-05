@@ -1,0 +1,15 @@
+/vendor/
+/composer.lock
+/.phpunit.cache/
+/.phpunit.result.cache
+/.composer-cache/
+/phpunit.xml
+/.idea/
+/.vscode/
+*.log
+
+### Certificados y llaves del SAT: NUNCA deben versionarse.
+*.cer
+*.key
+*.pfx
+*.pem

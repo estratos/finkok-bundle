@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<senv:Envelope xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://facturacion.finkok.com/cancel" xmlns:s0="apps.services.soap.core.views">
+  <senv:Body>
+    <tns:cancelResponse>
+      <tns:cancelResult>
+        <s0:Folios>
+          <s0:Folio>
+            <s0:UUID>7D162D12-F6B6-4BDE-BC8A-BABC4331919A</s0:UUID>
+            <s0:EstatusUUID>201</s0:EstatusUUID>
+            <s0:EstatusCancelacion>Cancelado</s0:EstatusCancelacion>
+          </s0:Folio>
+        </s0:Folios>
+        <s0:Acuse><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Acuse xmlns="http://www.sat.gob.mx/cancelacion/2.0" RfcEmisor="EKU9003173C9" Fecha="2024-05-21T11:00:00"><Folios><UUID>7D162D12-F6B6-4BDE-BC8A-BABC4331919A</UUID><EstatusUUID>201</EstatusUUID></Folios></Acuse>]]></s0:Acuse>
+        <s0:Fecha>2024-05-21T11:00:00</s0:Fecha>
+        <s0:RfcEmisor>EKU9003173C9</s0:RfcEmisor>
+        <s0:CodEstatus>201</s0:CodEstatus>
+      </tns:cancelResult>
+    </tns:cancelResponse>
+  </senv:Body>
+</senv:Envelope>

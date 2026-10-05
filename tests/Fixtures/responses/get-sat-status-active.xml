@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<senv:Envelope xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://facturacion.finkok.com/cancel" xmlns:s0="apps.services.soap.core.views">
+  <senv:Body>
+    <tns:get_sat_statusResponse>
+      <tns:get_sat_statusResult>
+        <s0:error/>
+        <s0:sat>
+          <s0:DetallesValidacionEFOS/>
+          <s0:EsCancelable>Cancelable con aceptación</s0:EsCancelable>
+          <s0:ValidacionEFOS>100</s0:ValidacionEFOS>
+          <s0:CodigoEstatus>S - Comprobante obtenido satisfactoriamente.</s0:CodigoEstatus>
+          <s0:Estado>Vigente</s0:Estado>
+          <s0:EstatusCancelacion/>
+        </s0:sat>
+      </tns:get_sat_statusResult>
+    </tns:get_sat_statusResponse>
+  </senv:Body>
+</senv:Envelope>

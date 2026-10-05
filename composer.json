@@ -1,0 +1,63 @@
+{
+    "name": "finkok/cfdi-bundle",
+    "description": "Bundle de Symfony 7.4 para consumir los Web Services SOAP de Finkok: timbrado (stamp) y cancelación de CFDI.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "keywords": [
+        "symfony",
+        "symfony-bundle",
+        "cfdi",
+        "sat",
+        "finkok",
+        "timbrado",
+        "cancelacion",
+        "facturacion",
+        "soap",
+        "xml"
+    ],
+    "authors": [
+        {
+            "name": "Finkok CFDI Bundle contributors"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "psr/log": "^2.0 || ^3.0",
+        "symfony/config": "^7.4",
+        "symfony/dependency-injection": "^7.4",
+        "symfony/http-client": "^7.4",
+        "symfony/http-client-contracts": "^3.5",
+        "symfony/http-kernel": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "symfony/var-dumper": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Finkok\\CfdiBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Finkok\\CfdiBundle\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": false
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:live": "phpunit --group live"
+    }
+}

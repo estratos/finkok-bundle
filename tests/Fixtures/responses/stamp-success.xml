@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<senv:Envelope xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://facturacion.finkok.com/stamp" xmlns:s0="apps.services.soap.core.views">
+  <senv:Body>
+    <tns:stampResponse>
+      <tns:stampResult>
+        <s0:xml><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" Version="4.0" Serie="A" Folio="1234" Fecha="2024-05-21T10:30:00" SubTotal="1000.00" Total="1160.00" TipoDeComprobante="I" Sello="ZmFrYS1zZWxsby1kZS1wcnVlYmEtcGFyYS1maXh0dXJlcw=="><cfdi:Emisor Rfc="EKU9003173C9" Nombre="ESCUELA KEMPER URGATE" RegimenFiscal="601"/><cfdi:Receptor Rfc="MISC491214B86" Nombre="MARIA DEL CARMEN MARTINEZ HERNANDEZ" UsoCFDI="G03"/><cfdi:Complemento><tfd:TimbreFiscalDigital Version="1.1" UUID="7D162D12-F6B6-4BDE-BC8A-BABC4331919A" FechaTimbrado="2024-05-21T10:32:11" RfcProvCertif="CVD110412TF6" SelloCFD="ZmFrYS1zZWxsby1kZS1wcnVlYmEtcGFyYS1maXh0dXJlcw==" NoCertificadoSAT="20001000000300022323" SelloSAT="ZmFrby1zZWxsby1zYXQtZGUtcHJ1ZWJhcw=="/></cfdi:Complemento></cfdi:Comprobante>]]></s0:xml>
+        <s0:UUID>7D162D12-F6B6-4BDE-BC8A-BABC4331919A</s0:UUID>
+        <s0:Fecha>2024-05-21T10:32:11</s0:Fecha>
+        <s0:CodEstatus>Comprobante timbrado satisfactoriamente</s0:CodEstatus>
+        <s0:SatSeal>ZmFrby1zZWxsby1zYXQtZGUtcHJ1ZWJhcw==</s0:SatSeal>
+        <s0:Incidencias/>
+        <s0:NoCertificadoSAT>20001000000300022323</s0:NoCertificadoSAT>
+      </tns:stampResult>
+    </tns:stampResponse>
+  </senv:Body>
+</senv:Envelope>

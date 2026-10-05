@@ -1,0 +1,12 @@
+# Normaliza los finales de línea a LF dentro del repositorio, sin depender de
+# la configuración de core.autocrlf de cada equipo (en Windows suele estar en true).
+# El código PHP sigue PSR-12, que exige LF.
+* text=auto eol=lf
+
+# Certificados y llaves del SAT: son binarios y no deben convertirse.
+*.cer binary
+*.key binary
+*.pfx binary
+
+# Los XML de prueba de Finkok se leen tal cual en las pruebas.
+/tests/Fixtures/** -text

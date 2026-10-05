@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<senv:Envelope xmlns:senv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://facturacion.finkok.com/cancel" xmlns:s0="apps.services.soap.core.views">
+  <senv:Body>
+    <tns:get_pendingResponse>
+      <tns:get_pendingResult>
+        <s0:uuids>
+          <tns:string>7D162D12-F6B6-4BDE-BC8A-BABC4331919A</tns:string>
+          <tns:string>1A2B3C4D-1111-2222-3333-444455556666</tns:string>
+        </s0:uuids>
+        <s0:error/>
+      </tns:get_pendingResult>
+    </tns:get_pendingResponse>
+  </senv:Body>
+</senv:Envelope>

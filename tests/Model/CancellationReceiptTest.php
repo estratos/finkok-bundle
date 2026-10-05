@@ -1,0 +1,138 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Finkok\CfdiBundle\Tests\Model;
+
+use Finkok\CfdiBundle\Exception\ApiException;
+use Finkok\CfdiBundle\Model\CancellationFolio;
+use Finkok\CfdiBundle\Model\CancellationReceipt;
+use Finkok\CfdiBundle\Model\CancellationStatusCode;
+use Finkok\CfdiBundle\Model\ErrorCode;
+use Finkok\CfdiBundle\Model\Incidence;
+use Finkok\CfdiBundle\Model\IncidenceCollection;
+use PHPUnit\Framework\TestCase;
+
+final class CancellationReceiptTest extends TestCase
+{
+    public function testUnFolio202EsUnaCancelacionExitosa(): void
+    {
+        $receipt = new CancellationReceipt(
+            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '202', 'Cancelado con aceptación')],
+            status: '201',
+        );
+
+        self::assertTrue($receipt->isSuccess());
+        self::assertTrue($receipt->folios[0]->isCancelled());
+        self::assertTrue($receipt->folios[0]->requiresReceiverAcceptance());
+        self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->cancelledUuids());
+        self::assertFalse($receipt->isInProcess());
+        self::assertSame(CancellationStatusCode::RequestAccepted, $receipt->cancellationStatusCode());
+    }
+
+    public function testUnFolio205QuedaEnProceso(): void
+    {
+        $receipt = new CancellationReceipt(
+            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '205', 'En proceso')],
+            status: '201',
+        );
+
+        self::assertTrue($receipt->isSuccess());
+        self::assertTrue($receipt->isInProcess());
+        self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->pendingUuids());
+        self::assertSame([], $receipt->cancelledUuids());
+    }
+
+    public function testUnFolio203SeReportaComoNoCancelableYRechazado(): void
+    {
+        $receipt = new CancellationReceipt(
+            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '203', 'No cancelable')],
+            status: '203',
+        );
+
+        self::assertFalse($receipt->isSuccess());
+        self::assertTrue($receipt->folios[0]->isNotCancellable());
+        self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->rejectedUuids());
+        self::assertSame(CancellationStatusCode::IssuerMismatch, $receipt->cancellationStatusCode());
+    }
+
+    public function testElCodigo205DeUuidNoEncontradoNoEsExito(): void
+    {
+        $receipt = new CancellationReceipt(status: '205');
+
+        self::assertFalse($receipt->isSuccess());
+        self::assertSame(CancellationStatusCode::UuidNotFound, $receipt->cancellationStatusCode());
+        self::assertTrue($receipt->cancellationStatusCode()?->isTransient());
+    }
+
+    public function testElCodigo798IndicaQueYaExistiaLaSolicitud(): void
+    {
+        $receipt = new CancellationReceipt(status: '798');
+
+        self::assertTrue($receipt->isSuccess(), 'La solicitud previa implica que la cancelación ya se pidió.');
+        self::assertSame(CancellationStatusCode::AlreadyRequested, $receipt->cancellationStatusCode());
+        self::assertStringContainsStringIgnoringCase('consulta el estatus', (string) $receipt->cancellationStatusCode()?->hint());
+    }
+
+    public function testElCodigo799ExigeContactarASoporte(): void
+    {
+        $receipt = new CancellationReceipt(status: '799');
+
+        self::assertFalse($receipt->isSuccess());
+        self::assertTrue($receipt->cancellationStatusCode()?->requiresManualAction());
+    }
+
+    public function testElAcuseConfirmaLaCancelacionAunqueNoHayaFolios(): void
+    {
+        $receipt = new CancellationReceipt(acknowledgment: '<Acuse/>');
+
+        self::assertTrue($receipt->hasAcknowledgment());
+        self::assertTrue($receipt->isSuccess());
+    }
+
+    public function testLocalizaUnFolioPorSuUuidSinDistinguirMayusculas(): void
+    {
+        $receipt = new CancellationReceipt(folios: [
+            new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '201'),
+        ]);
+
+        self::assertNotNull($receipt->getFolio('a1b2c3d4-1111-2222-3333-444455556666'));
+        self::assertNull($receipt->getFolio('00000000-0000-0000-0000-000000000000'));
+    }
+
+    public function testAssertSuccessLanzaApiExceptionCuandoLaCancelacionFalla(): void
+    {
+        $receipt = new CancellationReceipt(status: '203');
+
+        try {
+            $receipt->assertSuccess();
+            self::fail('Se esperaba ApiException.');
+        } catch (ApiException $exception) {
+            self::assertSame('203', $exception->getStatusCode());
+            self::assertStringContainsString('203', $exception->getMessage());
+        }
+    }
+
+    public function testUnEstadoNoDocumentadoNoSeAsumeComoExito(): void
+    {
+        $receipt = new CancellationReceipt(status: 'algo-nuevo-de-finkok');
+
+        self::assertNull($receipt->cancellationStatusCode());
+        self::assertFalse($receipt->isSuccess());
+    }
+
+    public function testUnaIncidenciaDeNegocioSePropagaComoExcepcion(): void
+    {
+        $receipt = new CancellationReceipt(
+            status: '705',
+            incidences: new IncidenceCollection([new Incidence(code: '705', message: 'XML Estructura inválida')]),
+        );
+
+        try {
+            $receipt->assertSuccess();
+            self::fail('Se esperaba ApiException.');
+        } catch (ApiException $exception) {
+            self::assertTrue($exception->hasErrorCode(ErrorCode::InvalidXmlStructure));
+        }
+    }
+}
