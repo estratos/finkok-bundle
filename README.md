@@ -1,5 +1,12 @@
 # Finkok CFDI Bundle
 
+[![Última versión](https://img.shields.io/packagist/v/estratos/finkok-bundle.svg?style=flat-square)](https://packagist.org/packages/estratos/finkok-bundle)
+[![Descargas totales](https://img.shields.io/packagist/dt/estratos/finkok-bundle.svg?style=flat-square)](https://packagist.org/packages/estratos/finkok-bundle)
+[![Integración continua](https://github.com/estratos/finkok-bundle/actions/workflows/ci.yml/badge.svg)](https://github.com/estratos/finkok-bundle/actions/workflows/ci.yml)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![PHP](https://img.shields.io/badge/php-%5E8.2-777bb4.svg?style=flat-square)](composer.json)
+[![Symfony](https://img.shields.io/badge/symfony-7.4-000000.svg?style=flat-square)](composer.json)
+
 Bundle de **Symfony 7.4** para consumir los Web Services SOAP de **Finkok**:
 **timbrado** (`stamp.wsdl`) y **cancelación** (`cancel.wsdl`) de CFDI.
 
@@ -37,6 +44,7 @@ Bundle de **Symfony 7.4** para consumir los Web Services SOAP de **Finkok**:
 9. [Seguridad](#seguridad)
 10. [Pruebas](#pruebas)
 11. [Estado y siguientes pasos](#estado-y-siguientes-pasos)
+12. [Soporte y contribución](#soporte-y-contribución)
 
 ---
 
@@ -53,10 +61,12 @@ Bundle de **Symfony 7.4** para consumir los Web Services SOAP de **Finkok**:
 ## Instalación
 
 ```bash
-composer require finkok/cfdi-bundle
+composer require estratos/finkok-bundle
 ```
 
-Registra el bundle en `config/bundles.php` (con Symfony Flex suele hacerse solo):
+Con **Symfony Flex** el bundle queda registrado automáticamente, sin que tengas que
+hacer nada más. Si tu aplicación no usa Flex, añádelo a mano en
+`config/bundles.php`:
 
 ```php
 return [
@@ -64,6 +74,9 @@ return [
     Finkok\CfdiBundle\FinkokBundle::class => ['all' => true],
 ];
 ```
+
+No necesitas `ext-soap`: el transporte SOAP está construido sobre Symfony
+HttpClient, que ya forma parte de las dependencias del paquete.
 
 ## Configuración
 
@@ -523,6 +536,27 @@ Fuera del alcance de esta entrega, candidatos naturales para siguientes versione
 - Web Service de utilidades (reportes de timbres, hora del servidor) y de registro
   de clientes (`add`, `edit`, `assign`, `switch`, `get`).
 - Data collector para el profiler de Symfony con el envelope de cada llamada.
+
+---
+
+## Soporte y contribución
+
+- **Reportar un error o pedir una mejora**: <https://github.com/estratos/finkok-bundle/issues>
+- **Código fuente**: <https://github.com/estratos/finkok-bundle>
+- **Paquete en Packagist**: <https://packagist.org/packages/estratos/finkok-bundle>
+- **Códigos de error de Finkok**: [docs/errores.md](docs/errores.md)
+
+Antes de enviar un cambio:
+
+```bash
+composer install
+vendor/bin/phpunit              # 186 pruebas offline, sin red
+vendor/bin/phpunit --group live # 4 pruebas de contrato contra Finkok
+```
+
+Los cambios se registran en [CHANGELOG.md](CHANGELOG.md) siguiendo
+[Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/), y el proyecto usa
+[Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 

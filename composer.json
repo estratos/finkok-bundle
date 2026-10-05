@@ -1,6 +1,6 @@
 {
-    "name": "finkok/cfdi-bundle",
-    "description": "Bundle de Symfony 7.4 para consumir los Web Services SOAP de Finkok: timbrado (stamp) y cancelación de CFDI.",
+    "name": "estratos/finkok-bundle",
+    "description": "Bundle de Symfony 7.4 para timbrar y cancelar CFDI consumiendo los Web Services SOAP de Finkok, sin depender de ext-soap.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -17,11 +17,19 @@
     ],
     "authors": [
         {
-            "name": "Finkok CFDI Bundle contributors"
+            "name": "Estratos Consulting",
+            "email": "julio@estratos.net",
+            "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/estratos/finkok-bundle",
+    "support": {
+        "issues": "https://github.com/estratos/finkok-bundle/issues",
+        "source": "https://github.com/estratos/finkok-bundle",
+        "docs": "https://github.com/estratos/finkok-bundle#readme"
+    },
     "require": {
-        "php": ">=8.2",
+        "php": "^8.2",
         "ext-dom": "*",
         "ext-libxml": "*",
         "psr/log": "^2.0 || ^3.0",
@@ -46,10 +54,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "symfony/flex": false
-        }
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
