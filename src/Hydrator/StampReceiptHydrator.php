@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\StampReceipt;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\StampReceipt;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Construye un {@see StampReceipt} desde el nodo de resultado de `stamp`,

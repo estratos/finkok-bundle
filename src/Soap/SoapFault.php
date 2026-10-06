@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * SOAP Fault a nivel de protocolo (`soap:Fault`).

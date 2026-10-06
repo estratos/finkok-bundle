@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Exception;
+namespace Estratos\FinkokBundle\Exception;
 
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\FinkokResultInterface;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\FinkokResultInterface;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
 
 /**
  * Finkok procesó la petición y respondió con una incidencia de negocio, es decir,

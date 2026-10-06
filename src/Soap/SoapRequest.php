@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
-use Finkok\CfdiBundle\Soap\Value\Base64EncodedValue;
-use Finkok\CfdiBundle\Soap\Value\Base64Value;
-use Finkok\CfdiBundle\Soap\Value\Value;
+use Estratos\FinkokBundle\Soap\Value\Base64EncodedValue;
+use Estratos\FinkokBundle\Soap\Value\Base64Value;
+use Estratos\FinkokBundle\Soap\Value\Value;
 
 /**
  * Petición SOAP completa: endpoint, operación, namespace y argumentos.

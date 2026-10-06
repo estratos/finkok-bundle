@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
 /**
  * Constructor de documentos XML con gestión automática de prefijos.

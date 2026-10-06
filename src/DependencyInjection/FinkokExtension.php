@@ -2,25 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\DependencyInjection;
+namespace Estratos\FinkokBundle\DependencyInjection;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\CredentialsProvider;
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Contract\CancelServiceInterface;
-use Finkok\CfdiBundle\Contract\StampServiceInterface;
-use Finkok\CfdiBundle\Csd\CsdEncoderInterface;
-use Finkok\CfdiBundle\Csd\RawFileCsdEncoder;
-use Finkok\CfdiBundle\DependencyInjection\Compiler\WiringPass;
-use Finkok\CfdiBundle\Http\HttpClientFactory;
-use Finkok\CfdiBundle\Service\CancelService;
-use Finkok\CfdiBundle\Service\StampService;
-use Finkok\CfdiBundle\Soap\HttpClientSoapTransport;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
-use Finkok\CfdiBundle\Xml\CfdiPreflightValidator;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Contract\CancelServiceInterface;
+use Estratos\FinkokBundle\Contract\StampServiceInterface;
+use Estratos\FinkokBundle\Csd\CsdEncoderInterface;
+use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
+use Estratos\FinkokBundle\DependencyInjection\Compiler\WiringPass;
+use Estratos\FinkokBundle\Http\HttpClientFactory;
+use Estratos\FinkokBundle\Service\CancelService;
+use Estratos\FinkokBundle\Service\StampService;
+use Estratos\FinkokBundle\Soap\HttpClientSoapTransport;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Xml\CfdiPreflightValidator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Reference;
@@ -39,17 +34,6 @@ final class FinkokExtension extends Extension
     public function load(array $configs, ContainerBuilder $container): void
     {
         /** @var array{
-         *     default_profile: ?string,
-         *     profiles: array<string, array{
-         *         username: string,
-         *         password: string,
-         *         taxpayer_id: ?string,
-         *         environment: string,
-         *         certificate: ?string,
-         *         private_key: ?string,
-         *         private_key_passphrase: ?string,
-         *         endpoints: array<string, array<string, ?string>>
-         *     }>,
          *     endpoints: array<string, array<string, string>>,
          *     http: array{timeout: float, log_payloads: bool, user_agent: string, retry: array<string, mixed>},
          *     preflight: array{enabled: bool, require_signature: bool}
@@ -57,16 +41,8 @@ final class FinkokExtension extends Extension
          */
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        if ([] === $config['profiles']) {
-            throw new InvalidConfigurationException(
-                'Configura al menos un perfil bajo «finkok.profiles» con el usuario y la contraseña '
-                .'que te proporcionó Finkok.',
-            );
-        }
-
         $this->registerCsdEncoder($container);
         $this->registerEndpointResolver($container, $config['endpoints']);
-        $this->registerCredentials($container, $config['profiles'], $config['default_profile']);
         $this->registerPreflightValidator($container, $config['preflight']);
         $this->registerHttp($container, $config['http']);
         $this->registerTransport($container, $config['http']);
@@ -92,81 +68,6 @@ final class FinkokExtension extends Extension
         $container->register('finkok.endpoint_resolver', EndpointResolver::class)
             ->setArguments([$endpoints])
             ->setPublic(false);
-    }
-
-    /**
-     * @param array<string, array<string, mixed>> $profiles
-     */
-    private function registerCredentials(ContainerBuilder $container, array $profiles, ?string $defaultProfile): void
-    {
-        $references = [];
-        $usedIds = [];
-
-        foreach ($profiles as $name => $profile) {
-            $serviceId = $this->profileServiceId((string) $name, $usedIds);
-            $usedIds[$serviceId] = true;
-
-            $container->register($serviceId, Credentials::class)
-                ->setArguments([
-                    $name,
-                    $profile['username'],
-                    $profile['password'],
-                    $profile['taxpayer_id'],
-                    Environment::from($profile['environment']),
-                    $profile['certificate'],
-                    $profile['private_key'],
-                    $profile['private_key_passphrase'],
-                    $this->normalizeProfileEndpoints($profile['endpoints'] ?? []),
-                    new Reference('finkok.csd_encoder'),
-                ])
-                ->setPublic(false);
-
-            $references[$name] = new Reference($serviceId);
-        }
-
-        $container->register('finkok.credentials_provider', CredentialsProvider::class)
-            ->setArguments([$references, $defaultProfile])
-            ->setPublic(false);
-
-        $container->setAlias(CredentialsProviderInterface::class, 'finkok.credentials_provider')
-            ->setPublic(true);
-    }
-
-    /**
-     * @param array<string, array<string, ?string>> $endpoints
-     *
-     * @return array<string, array<string, string>>
-     */
-    private function normalizeProfileEndpoints(array $endpoints): array
-    {
-        $normalized = [];
-
-        foreach ($endpoints as $service => $environments) {
-            foreach ($environments as $environment => $url) {
-                if (null !== $url && '' !== trim($url)) {
-                    $normalized[$service][$environment] = $url;
-                }
-            }
-        }
-
-        return $normalized;
-    }
-
-    /**
-     * Genera un id de servicio estable y válido a partir del nombre del perfil.
-     *
-     * @param array<string, bool> $usedIds
-     */
-    private function profileServiceId(string $name, array $usedIds): string
-    {
-        $sanitized = (string) preg_replace('/[^A-Za-z0-9_.-]/', '_', $name);
-        $serviceId = 'finkok.credentials.'.$sanitized;
-
-        if ($serviceId === 'finkok.credentials.' || isset($usedIds[$serviceId])) {
-            $serviceId .= '.'.substr(md5($name), 0, 6);
-        }
-
-        return $serviceId;
     }
 
     /**

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Config;
+namespace Estratos\FinkokBundle\Config;
 
-use Finkok\CfdiBundle\Csd\CsdEncoderInterface;
-use Finkok\CfdiBundle\Csd\RawFileCsdEncoder;
-use Finkok\CfdiBundle\Exception\ConfigurationException;
+use Estratos\FinkokBundle\Csd\CsdEncoderInterface;
+use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
+use Estratos\FinkokBundle\Exception\ConfigurationException;
 
 /**
  * Implementación inmutable de un perfil de credenciales.

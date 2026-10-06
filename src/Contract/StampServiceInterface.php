@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Contract;
+namespace Estratos\FinkokBundle\Contract;
 
-use Finkok\CfdiBundle\Config\CredentialsInterface;
-use Finkok\CfdiBundle\Model\QueryPendingResult;
-use Finkok\CfdiBundle\Model\StampReceipt;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Model\QueryPendingResult;
+use Estratos\FinkokBundle\Model\StampReceipt;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
 
 /**
  * Web Service de timbrado de Finkok (`stamp.wsdl`).

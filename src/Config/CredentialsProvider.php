@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Config;
+namespace Estratos\FinkokBundle\Config;
 
-use Finkok\CfdiBundle\Exception\ConfigurationException;
-use Finkok\CfdiBundle\Exception\ProfileNotFoundException;
+use Estratos\FinkokBundle\Exception\ConfigurationException;
+use Estratos\FinkokBundle\Exception\ProfileNotFoundException;
 
 /**
  * Proveedor de credenciales basado en la configuración del bundle.

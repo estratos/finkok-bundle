@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Model;
+namespace Estratos\FinkokBundle\Tests\Model;
 
-use Finkok\CfdiBundle\Exception\ApiException;
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\Incidence;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
-use Finkok\CfdiBundle\Model\StampReceipt;
+use Estratos\FinkokBundle\Exception\ApiException;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\Incidence;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Model\StampReceipt;
 use PHPUnit\Framework\TestCase;
 
 final class StampReceiptTest extends TestCase
@@ -154,7 +154,7 @@ final class StampReceiptTest extends TestCase
     {
         $receipt = new StampReceipt(
             uuid: '7D162D12-F6B6-4BDE-BC8A-BABC4331919A',
-            xml: \Finkok\CfdiBundle\Tests\Fixtures::stampedCfdi(),
+            xml: \Estratos\FinkokBundle\Tests\Fixtures::stampedCfdi(),
         );
 
         self::assertSame('7D162D12-F6B6-4BDE-BC8A-BABC4331919A', $receipt->uuidFromXml());

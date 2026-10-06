@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Exception;
+namespace Estratos\FinkokBundle\Exception;
 
 /**
  * El servicio respondió un SOAP Fault (`soap:Fault` / `soapenv:Fault`) a nivel de

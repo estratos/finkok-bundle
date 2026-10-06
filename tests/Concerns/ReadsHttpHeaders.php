@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Concerns;
+namespace Estratos\FinkokBundle\Tests\Concerns;
 
 /**
  * Lectura de las cabeceras HTTP tal como las entrega `MockHttpClient`.

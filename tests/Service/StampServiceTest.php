@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Service;
+namespace Estratos\FinkokBundle\Tests\Service;
 
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Exception\ApiException;
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Tests\Concerns\InteractsWithFinkok;
-use Finkok\CfdiBundle\Tests\Concerns\ReadsHttpHeaders;
-use Finkok\CfdiBundle\Tests\Fixtures;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Exception\ApiException;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Tests\Concerns\InteractsWithFinkok;
+use Estratos\FinkokBundle\Tests\Concerns\ReadsHttpHeaders;
+use Estratos\FinkokBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
@@ -85,7 +85,7 @@ final class StampServiceTest extends TestCase
     {
         $service = $this->stampService([new MockResponse(Fixtures::response('soap-fault'), ['http_code' => 500])]);
 
-        $this->expectException(\Finkok\CfdiBundle\Exception\SoapFaultException::class);
+        $this->expectException(\Estratos\FinkokBundle\Exception\SoapFaultException::class);
 
         $service->stamp(Fixtures::signedCfdi());
     }

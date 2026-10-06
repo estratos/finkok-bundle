@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Xml;
+namespace Estratos\FinkokBundle\Xml;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Exception\ValidationException;
 
 /**
  * Documento CFDI listo para enviarse a Finkok.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Exception;
+namespace Estratos\FinkokBundle\Exception;
 
 /**
  * Se solicitó un perfil de credenciales que no existe en la configuración.

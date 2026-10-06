@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Config;
+namespace Estratos\FinkokBundle\Config;
 
 /**
  * Resuelve los perfiles de credenciales configurados.
@@ -25,7 +25,7 @@ interface CredentialsProviderInterface
     /**
      * Devuelve el perfil indicado, o el perfil por defecto si `$name` es `null`.
      *
-     * @throws \Finkok\CfdiBundle\Exception\ProfileNotFoundException
+     * @throws \Estratos\FinkokBundle\Exception\ProfileNotFoundException
      */
     public function get(?string $name = null): CredentialsInterface;
 
@@ -37,7 +37,7 @@ interface CredentialsProviderInterface
     /**
      * Perfil por defecto.
      *
-     * @throws \Finkok\CfdiBundle\Exception\ProfileNotFoundException
+     * @throws \Estratos\FinkokBundle\Exception\ProfileNotFoundException
      */
     public function default(): CredentialsInterface;
 

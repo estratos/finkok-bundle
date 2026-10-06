@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Service;
+namespace Estratos\FinkokBundle\Tests\Service;
 
-use Finkok\CfdiBundle\Model\ReceiptType;
-use Finkok\CfdiBundle\Tests\Concerns\InteractsWithFinkok;
-use Finkok\CfdiBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Tests\Concerns\InteractsWithFinkok;
+use Estratos\FinkokBundle\Tests\Fixtures;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 

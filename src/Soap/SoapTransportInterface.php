@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
 /**
  * Transporte SOAP desacoplado del cliente HTTP.
@@ -17,9 +17,9 @@ interface SoapTransportInterface
     /**
      * Envía la petición y devuelve la respuesta SOAP.
      *
-     * @throws \Finkok\CfdiBundle\Exception\TransportException          fallo de red o HTTP
-     * @throws \Finkok\CfdiBundle\Exception\SoapFaultException         SOAP Fault de protocolo
-     * @throws \Finkok\CfdiBundle\Exception\UnexpectedResponseException respuesta no interpretable
+     * @throws \Estratos\FinkokBundle\Exception\TransportException          fallo de red o HTTP
+     * @throws \Estratos\FinkokBundle\Exception\SoapFaultException         SOAP Fault de protocolo
+     * @throws \Estratos\FinkokBundle\Exception\UnexpectedResponseException respuesta no interpretable
      */
     public function send(SoapRequest $request): SoapResponse;
 }

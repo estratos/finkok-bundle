@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap\Value;
+namespace Estratos\FinkokBundle\Soap\Value;
 
-use Finkok\CfdiBundle\Soap\SoapValueInterface;
-use Finkok\CfdiBundle\Soap\SoapWriter;
+use Estratos\FinkokBundle\Soap\SoapValueInterface;
+use Estratos\FinkokBundle\Soap\SoapWriter;
 
 /**
  * Contenido que **ya** está codificado en base64 y debe enviarse tal cual.
@@ -16,7 +16,7 @@ use Finkok\CfdiBundle\Soap\SoapWriter;
  * incidencia 705 en el XML del CFDI.
  *
  * Los parámetros `cer` y `key` del método `cancel` se construyen con este objeto,
- * porque {@see \Finkok\CfdiBundle\Csd\CsdEncoderInterface} ya entrega base64.
+ * porque {@see \Estratos\FinkokBundle\Csd\CsdEncoderInterface} ya entrega base64.
  */
 final class Base64EncodedValue implements SoapValueInterface
 {

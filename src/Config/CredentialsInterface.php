@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Config;
+namespace Estratos\FinkokBundle\Config;
 
 /**
  * Credenciales y datos fiscales con los que se consume un Web Service de Finkok.
@@ -38,7 +38,7 @@ interface CredentialsInterface
     /**
      * RFC del emisor, obligatorio.
      *
-     * @throws \Finkok\CfdiBundle\Exception\ConfigurationException si no está configurado
+     * @throws \Estratos\FinkokBundle\Exception\ConfigurationException si no está configurado
      */
     public function requireTaxpayerId(): string;
 

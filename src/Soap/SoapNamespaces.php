@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
 /**
  * Namespaces XML usados por los Web Services de Finkok.

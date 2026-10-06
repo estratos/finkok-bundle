@@ -2,36 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Service;
+namespace Estratos\FinkokBundle\Service;
 
-use Finkok\CfdiBundle\Config\CredentialsInterface;
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Service;
-use Finkok\CfdiBundle\Contract\CancelServiceInterface;
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Hydrator\AcceptRejectResultHydrator;
-use Finkok\CfdiBundle\Hydrator\CancellationAcknowledgmentHydrator;
-use Finkok\CfdiBundle\Hydrator\CancellationReceiptHydrator;
-use Finkok\CfdiBundle\Hydrator\PendingCancellationsHydrator;
-use Finkok\CfdiBundle\Hydrator\QueryPendingResultHydrator;
-use Finkok\CfdiBundle\Hydrator\SatStatusResultHydrator;
-use Finkok\CfdiBundle\Model\AcceptRejectAnswer;
-use Finkok\CfdiBundle\Model\AcceptRejectResult;
-use Finkok\CfdiBundle\Model\CancellationAcknowledgment;
-use Finkok\CfdiBundle\Model\CancellationReceipt;
-use Finkok\CfdiBundle\Model\CancellationUuid;
-use Finkok\CfdiBundle\Model\PendingCancellations;
-use Finkok\CfdiBundle\Model\QueryPendingResult;
-use Finkok\CfdiBundle\Model\ReceiptType;
-use Finkok\CfdiBundle\Model\SatStatusResult;
-use Finkok\CfdiBundle\Soap\SoapNamespaces;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
-use Finkok\CfdiBundle\Soap\Value\AttributeElement;
-use Finkok\CfdiBundle\Soap\Value\Base64EncodedValue;
-use Finkok\CfdiBundle\Soap\Value\ComplexValue;
-use Finkok\CfdiBundle\Soap\Value\RepeatedValue;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Service;
+use Estratos\FinkokBundle\Contract\CancelServiceInterface;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Hydrator\AcceptRejectResultHydrator;
+use Estratos\FinkokBundle\Hydrator\CancellationAcknowledgmentHydrator;
+use Estratos\FinkokBundle\Hydrator\CancellationReceiptHydrator;
+use Estratos\FinkokBundle\Hydrator\PendingCancellationsHydrator;
+use Estratos\FinkokBundle\Hydrator\QueryPendingResultHydrator;
+use Estratos\FinkokBundle\Hydrator\SatStatusResultHydrator;
+use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
+use Estratos\FinkokBundle\Model\AcceptRejectResult;
+use Estratos\FinkokBundle\Model\CancellationAcknowledgment;
+use Estratos\FinkokBundle\Model\CancellationReceipt;
+use Estratos\FinkokBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Model\PendingCancellations;
+use Estratos\FinkokBundle\Model\QueryPendingResult;
+use Estratos\FinkokBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Model\SatStatusResult;
+use Estratos\FinkokBundle\Soap\SoapNamespaces;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Soap\Value\AttributeElement;
+use Estratos\FinkokBundle\Soap\Value\Base64EncodedValue;
+use Estratos\FinkokBundle\Soap\Value\ComplexValue;
+use Estratos\FinkokBundle\Soap\Value\RepeatedValue;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
 use Psr\Log\LoggerInterface;
 
 /**

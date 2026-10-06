@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Xml;
+namespace Estratos\FinkokBundle\Tests\Xml;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Tests\Fixtures;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
-use Finkok\CfdiBundle\Xml\CfdiPreflightValidator;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Xml\CfdiPreflightValidator;
 use PHPUnit\Framework\TestCase;
 
 final class CfdiPreflightValidatorTest extends TestCase

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Service;
+namespace Estratos\FinkokBundle\Service;
 
-use Finkok\CfdiBundle\Config\CredentialsInterface;
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Service;
-use Finkok\CfdiBundle\Soap\SoapRequest;
-use Finkok\CfdiBundle\Soap\SoapResponse;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Service;
+use Estratos\FinkokBundle\Soap\SoapRequest;
+use Estratos\FinkokBundle\Soap\SoapResponse;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

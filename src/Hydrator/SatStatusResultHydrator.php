@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\SatStatusDetails;
-use Finkok\CfdiBundle\Model\SatStatusResult;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\SatStatusDetails;
+use Estratos\FinkokBundle\Model\SatStatusResult;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Construye un {@see SatStatusResult} desde el resultado de `get_sat_status`

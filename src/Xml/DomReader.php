@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Xml;
+namespace Estratos\FinkokBundle\Xml;
 
 /**
  * Utilidades de lectura sobre DOM tolerantes a prefijos y namespaces.
@@ -199,7 +199,7 @@ final class DomReader
     /**
      * Carga un documento XML desde una cadena sin emitir warnings al exterior.
      *
-     * @throws \Finkok\CfdiBundle\Exception\UnexpectedResponseException
+     * @throws \Estratos\FinkokBundle\Exception\UnexpectedResponseException
      */
     public static function loadDocument(string $xml, string $context): \DOMDocument
     {
@@ -219,7 +219,7 @@ final class DomReader
         if (!$loaded || [] !== $errors) {
             $detail = [] !== $errors ? trim($errors[0]->message) : 'contenido vacío';
 
-            throw new \Finkok\CfdiBundle\Exception\UnexpectedResponseException(
+            throw new \Estratos\FinkokBundle\Exception\UnexpectedResponseException(
                 sprintf('No fue posible interpretar el XML de %s: %s', $context, $detail),
                 null,
                 null,

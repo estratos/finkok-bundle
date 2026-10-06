@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model\Concerns;
+namespace Estratos\FinkokBundle\Model\Concerns;
 
-use Finkok\CfdiBundle\Exception\ApiException;
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Exception\ApiException;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
 /**
  * Implementación por defecto de las operaciones derivadas de
- * {@see \Finkok\CfdiBundle\Model\FinkokResultInterface}.
+ * {@see \Estratos\FinkokBundle\Model\FinkokResultInterface}.
  *
  * La clase que use este trait debe implementar `isSuccess()`, `getStatusCode()`
  * y `getIncidences()`.

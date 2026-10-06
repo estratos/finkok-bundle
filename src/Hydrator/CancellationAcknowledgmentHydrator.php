@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\CancellationAcknowledgment;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\CancellationAcknowledgment;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Construye un {@see CancellationAcknowledgment} desde el resultado de

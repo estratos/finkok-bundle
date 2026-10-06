@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Model;
+namespace Estratos\FinkokBundle\Tests\Model;
 
-use Finkok\CfdiBundle\Exception\ApiException;
-use Finkok\CfdiBundle\Model\CancellationFolio;
-use Finkok\CfdiBundle\Model\CancellationReceipt;
-use Finkok\CfdiBundle\Model\CancellationStatusCode;
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\Incidence;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Exception\ApiException;
+use Estratos\FinkokBundle\Model\CancellationFolio;
+use Estratos\FinkokBundle\Model\CancellationReceipt;
+use Estratos\FinkokBundle\Model\CancellationStatusCode;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\Incidence;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
 use PHPUnit\Framework\TestCase;
 
 final class CancellationReceiptTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Config;
+namespace Estratos\FinkokBundle\Config;
 
 /**
  * Resuelve la URL del endpoint SOAP aplicando la precedencia:

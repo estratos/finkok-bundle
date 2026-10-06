@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Concerns;
+namespace Estratos\FinkokBundle\Tests\Concerns;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\CredentialsProvider;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Service\CancelService;
-use Finkok\CfdiBundle\Service\StampService;
-use Finkok\CfdiBundle\Soap\HttpClientSoapTransport;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
-use Finkok\CfdiBundle\Xml\CfdiPreflightValidator;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsProvider;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Service\CancelService;
+use Estratos\FinkokBundle\Service\StampService;
+use Estratos\FinkokBundle\Soap\HttpClientSoapTransport;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Xml\CfdiPreflightValidator;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 

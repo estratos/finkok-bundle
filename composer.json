@@ -45,12 +45,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Finkok\\CfdiBundle\\": "src/"
+            "Estratos\\FinkokBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Finkok\\CfdiBundle\\Tests\\": "tests/"
+            "Estratos\\FinkokBundle\\Tests\\": "tests/"
         }
     },
     "config": {

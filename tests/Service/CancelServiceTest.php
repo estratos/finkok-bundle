@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Service;
+namespace Estratos\FinkokBundle\Tests\Service;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\CredentialsProvider;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Model\AcceptRejectAnswer;
-use Finkok\CfdiBundle\Model\CancellationReason;
-use Finkok\CfdiBundle\Model\CancellationUuid;
-use Finkok\CfdiBundle\Model\ReceiptType;
-use Finkok\CfdiBundle\Service\CancelService;
-use Finkok\CfdiBundle\Tests\Concerns\InteractsWithFinkok;
-use Finkok\CfdiBundle\Tests\Concerns\ReadsHttpHeaders;
-use Finkok\CfdiBundle\Tests\Concerns\ManagesTempFiles;
-use Finkok\CfdiBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsProvider;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
+use Estratos\FinkokBundle\Model\CancellationReason;
+use Estratos\FinkokBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Service\CancelService;
+use Estratos\FinkokBundle\Tests\Concerns\InteractsWithFinkok;
+use Estratos\FinkokBundle\Tests\Concerns\ReadsHttpHeaders;
+use Estratos\FinkokBundle\Tests\Concerns\ManagesTempFiles;
+use Estratos\FinkokBundle\Tests\Fixtures;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Response\MockResponse;
 

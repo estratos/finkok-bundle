@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Model;
+namespace Estratos\FinkokBundle\Tests\Model;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Model\AcceptRejectAnswer;
-use Finkok\CfdiBundle\Model\CancellationReason;
-use Finkok\CfdiBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
+use Estratos\FinkokBundle\Model\CancellationReason;
+use Estratos\FinkokBundle\Model\CancellationUuid;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

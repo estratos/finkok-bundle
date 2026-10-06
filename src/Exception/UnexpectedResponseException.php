@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Exception;
+namespace Estratos\FinkokBundle\Exception;
 
 /**
  * La respuesta recibida no tiene la forma esperada: no es XML, no contiene

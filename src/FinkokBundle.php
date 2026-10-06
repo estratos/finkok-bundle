@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle;
+namespace Estratos\FinkokBundle;
 
-use Finkok\CfdiBundle\DependencyInjection\Compiler\WiringPass;
-use Finkok\CfdiBundle\DependencyInjection\FinkokExtension;
+use Estratos\FinkokBundle\DependencyInjection\Compiler\WiringPass;
+use Estratos\FinkokBundle\DependencyInjection\FinkokExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -14,11 +14,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * Bundle de Symfony para consumir los Web Services SOAP de Finkok.
  *
  * Servicios expuestos (autowireables por su interfaz):
- *  - {@see \Finkok\CfdiBundle\Contract\StampServiceInterface}  timbrado
- *  - {@see \Finkok\CfdiBundle\Contract\CancelServiceInterface} cancelación
- *  - {@see \Finkok\CfdiBundle\Config\CredentialsProviderInterface} perfiles multi-emisor
- *  - {@see \Finkok\CfdiBundle\Soap\SoapTransportInterface} transporte SOAP
- *  - {@see \Finkok\CfdiBundle\Csd\CsdEncoderInterface} codificación de CSD
+ *  - {@see \Estratos\FinkokBundle\Contract\StampServiceInterface}  timbrado
+ *  - {@see \Estratos\FinkokBundle\Contract\CancelServiceInterface} cancelación
+ *  - {@see \Estratos\FinkokBundle\Config\CredentialsProviderInterface} perfiles multi-emisor
+ *  - {@see \Estratos\FinkokBundle\Soap\SoapTransportInterface} transporte SOAP
+ *  - {@see \Estratos\FinkokBundle\Csd\CsdEncoderInterface} codificación de CSD
  */
 final class FinkokBundle extends Bundle
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Exception;
+namespace Estratos\FinkokBundle\Exception;
 
 /**
  * Fallo de red o de HTTP al invocar el Web Service de Finkok: DNS, TLS, timeouts,

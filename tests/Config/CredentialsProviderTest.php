@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Config;
+namespace Estratos\FinkokBundle\Tests\Config;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\CredentialsProvider;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Config\Service;
-use Finkok\CfdiBundle\Exception\ConfigurationException;
-use Finkok\CfdiBundle\Exception\ProfileNotFoundException;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsProvider;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Config\Service;
+use Estratos\FinkokBundle\Exception\ConfigurationException;
+use Estratos\FinkokBundle\Exception\ProfileNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 final class CredentialsProviderTest extends TestCase

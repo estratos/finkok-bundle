@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Concerns;
+namespace Estratos\FinkokBundle\Tests\Concerns;
 
 /**
  * Archivos temporales para las pruebas que necesitan rutas reales (CSD, CFDI en

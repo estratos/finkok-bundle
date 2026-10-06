@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Model;
+namespace Estratos\FinkokBundle\Tests\Model;
 
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\Incidence;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\Incidence;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
 use PHPUnit\Framework\TestCase;
 
 final class IncidenceCollectionTest extends TestCase

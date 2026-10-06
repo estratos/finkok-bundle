@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Exception\ValidationException;
 
 /**
  * Un UUID a cancelar con su motivo y, en su caso, su folio de sustitución.

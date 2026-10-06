@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Integration;
+namespace Estratos\FinkokBundle\Tests\Integration;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\CredentialsProvider;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Exception\SoapFaultException;
-use Finkok\CfdiBundle\Model\CancellationReason;
-use Finkok\CfdiBundle\Model\CancellationUuid;
-use Finkok\CfdiBundle\Model\ErrorCode;
-use Finkok\CfdiBundle\Model\ReceiptType;
-use Finkok\CfdiBundle\Service\CancelService;
-use Finkok\CfdiBundle\Service\StampService;
-use Finkok\CfdiBundle\Soap\HttpClientSoapTransport;
-use Finkok\CfdiBundle\Tests\Fixtures;
-use Finkok\CfdiBundle\Xml\CfdiPreflightValidator;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsProvider;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Exception\SoapFaultException;
+use Estratos\FinkokBundle\Model\CancellationReason;
+use Estratos\FinkokBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Service\CancelService;
+use Estratos\FinkokBundle\Service\StampService;
+use Estratos\FinkokBundle\Soap\HttpClientSoapTransport;
+use Estratos\FinkokBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Xml\CfdiPreflightValidator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\HttpClient;

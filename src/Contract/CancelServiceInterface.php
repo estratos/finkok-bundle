@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Contract;
+namespace Estratos\FinkokBundle\Contract;
 
-use Finkok\CfdiBundle\Config\CredentialsInterface;
-use Finkok\CfdiBundle\Model\AcceptRejectAnswer;
-use Finkok\CfdiBundle\Model\AcceptRejectResult;
-use Finkok\CfdiBundle\Model\CancellationAcknowledgment;
-use Finkok\CfdiBundle\Model\CancellationReceipt;
-use Finkok\CfdiBundle\Model\CancellationUuid;
-use Finkok\CfdiBundle\Model\PendingCancellations;
-use Finkok\CfdiBundle\Model\QueryPendingResult;
-use Finkok\CfdiBundle\Model\ReceiptType;
-use Finkok\CfdiBundle\Model\SatStatusResult;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
+use Estratos\FinkokBundle\Model\AcceptRejectResult;
+use Estratos\FinkokBundle\Model\CancellationAcknowledgment;
+use Estratos\FinkokBundle\Model\CancellationReceipt;
+use Estratos\FinkokBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Model\PendingCancellations;
+use Estratos\FinkokBundle\Model\QueryPendingResult;
+use Estratos\FinkokBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Model\SatStatusResult;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
 
 /**
  * Web Service de cancelación de Finkok (`cancel.wsdl`).

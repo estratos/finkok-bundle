@@ -29,6 +29,7 @@ Bundle de **Symfony 7.4** para consumir los Web Services SOAP de **Finkok**:
 1. [Requisitos](#requisitos)
 2. [Instalación](#instalación)
 3. [Configuración](#configuración)
+   - [Credenciales: las aporta tu aplicación](#credenciales-las-aporta-tu-aplicación)
 4. [Uso](#uso)
    - [Timbrado](#timbrado)
    - [Recuperar un comprobante ya timbrado (incidencia 307)](#recuperar-un-comprobante-ya-timbrado-incidencia-307)
@@ -71,7 +72,7 @@ hacer nada más. Si tu aplicación no usa Flex, añádelo a mano en
 ```php
 return [
     // …
-    Finkok\CfdiBundle\FinkokBundle::class => ['all' => true],
+    Estratos\FinkokBundle\FinkokBundle::class => ['all' => true],
 ];
 ```
 
@@ -80,29 +81,11 @@ HttpClient, que ya forma parte de las dependencias del paquete.
 
 ## Configuración
 
+El bundle configura **solo infraestructura**, nunca credenciales:
+
 ```yaml
 # config/packages/finkok.yaml
 finkok:
-    # Perfil que se usa cuando una llamada no indica uno explícitamente.
-    default_profile: matriz
-
-    profiles:
-        matriz:
-            username: '%env(FINKOK_USERNAME)%'
-            password: '%env(FINKOK_PASSWORD)%'
-            taxpayer_id: 'EKU9003173C9'   # RFC emisor; obligatorio para cancelar
-            environment: demo             # demo | production
-
-        sucursal:
-            username: '%env(FINKOK_USERNAME)%'
-            password: '%env(FINKOK_PASSWORD)%'
-            taxpayer_id: 'MISC491214B86'
-            environment: production
-            # CSD opcional: solo se usa en el método cancel
-            certificate: '%kernel.project_dir%/var/csd/sucursal.cer'
-            private_key: '%kernel.project_dir%/var/csd/sucursal.key'
-            private_key_passphrase: '%env(CSD_PASSPHRASE)%'
-
     http:
         timeout: 30          # segundos por petición
         log_payloads: false  # true escribe el envelope completo en el log (¡datos fiscales!)
@@ -115,14 +98,7 @@ finkok:
         require_signature: true  # exige el atributo Sello (evita CFDI40102)
 ```
 
-```dotenv
-# .env.local
-FINKOK_USERNAME="tu-usuario@empresa.com"
-FINKOK_PASSWORD="tu-contraseña"
-```
-
-Las URLs por defecto son las oficiales de Finkok y se pueden sobrescribir de forma
-global o por perfil:
+Las URLs por defecto son las oficiales de Finkok y pueden sobrescribirse:
 
 ```yaml
 finkok:
@@ -133,21 +109,122 @@ finkok:
         cancel:
             demo: 'https://demo-facturacion.finkok.com/servicios/soap/cancel'
             production: 'https://facturacion.finkok.com/servicios/soap/cancel'
-    profiles:
-        matriz:
-            # …
-            endpoints:                       # este perfil sale por un proxy interno
-                stamp:
-                    production: 'https://proxy.interno/finkok/stamp'
 ```
 
+### Credenciales: las aporta tu aplicación
+
+Los perfiles **no** viven en la configuración del bundle. Los crea la aplicación
+que consume los servicios y se inyectan mediante un servicio que implemente
+`Estratos\FinkokBundle\Config\CredentialsProviderInterface`. Así las credenciales
+pueden venir de variables de entorno, de un secret manager, de la base de datos o
+del inquilino activo, sin quedar embebidas en la configuración de un paquete.
+
+#### Opción 1: declararlos en `config/services.yaml` (sin escribir PHP)
+
+```yaml
+# config/services.yaml
+services:
+    # El proveedor que consume el bundle.
+    Estratos\FinkokBundle\Config\CredentialsProviderInterface:
+        class: Estratos\FinkokBundle\Config\CredentialsProvider
+        arguments:
+            $profiles:
+                matriz: '@app.finkok.credentials.matriz'
+                sucursal: '@app.finkok.credentials.sucursal'
+            $default: matriz
+
+    # Cada RFC emisor, con su ambiente y —si va a cancelar— su CSD.
+    app.finkok.credentials.matriz:
+        class: Estratos\FinkokBundle\Config\Credentials
+        arguments:
+            $name: matriz
+            $username: '%env(FINKOK_USERNAME)%'
+            $password: '%env(FINKOK_PASSWORD)%'
+            $taxpayerId: '%env(FINKOK_RFC)%'
+            $environment: !php/enum Estratos\FinkokBundle\Config\Environment::Demo
+
+    app.finkok.credentials.sucursal:
+        class: Estratos\FinkokBundle\Config\Credentials
+        arguments:
+            $name: sucursal
+            $username: '%env(FINKOK_USERNAME)%'
+            $password: '%env(FINKOK_PASSWORD)%'
+            $taxpayerId: 'MISC491214B86'
+            $environment: !php/enum Estratos\FinkokBundle\Config\Environment::Production
+            # CSD opcional: solo se usa en el método cancel
+            $certificate: '%kernel.project_dir%/var/csd/sucursal.cer'
+            $privateKey: '%kernel.project_dir%/var/csd/sucursal.key'
+            $privateKeyPassphrase: '%env(CSD_PASSPHRASE)%'
+```
+
+```dotenv
+# .env.local
+FINKOK_USERNAME="tu-usuario@empresa.com"
+FINKOK_PASSWORD="tu-contraseña"
+FINKOK_RFC="EKU9003173C9"
+```
+
+#### Opción 2: derivarlos en tiempo de ejecución
+
+Cuando los perfiles dependen del inquilino, de un registro en base de datos o de
+un secret manager, implementa la interfaz:
+
+```php
+namespace App\Finkok;
+
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\Environment;
+
+final class TenantCredentialsProvider implements CredentialsProviderInterface
+{
+    public function __construct(private readonly TenantContext $tenant)
+    {
+    }
+
+    public function get(?string $name = null): CredentialsInterface
+    {
+        $name ??= (string) $this->tenant->activeRfc();
+
+        return new Credentials(
+            name: $name,
+            username: (string) $this->tenant->get('finkok_username'),
+            password: (string) $this->tenant->get('finkok_password'),
+            taxpayerId: $name,
+            environment: $this->tenant->isProduction() ? Environment::Production : Environment::Demo,
+        );
+    }
+
+    public function has(string $name): bool
+    {
+        return null !== $this->tenant->find($name);
+    }
+
+    public function default(): CredentialsInterface
+    {
+        return $this->get();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function names(): array
+    {
+        return $this->tenant->allRfcs();
+    }
+}
+```
+
+Si la aplicación no registra ningún proveedor, el contenedor compila igual y el
+error aparece —con instrucciones— en cuanto se intente timbrar o cancelar.
 ## Uso
 
 Los servicios se inyectan por su interfaz:
 
 ```php
-use Finkok\CfdiBundle\Contract\CancelServiceInterface;
-use Finkok\CfdiBundle\Contract\StampServiceInterface;
+use Estratos\FinkokBundle\Contract\CancelServiceInterface;
+use Estratos\FinkokBundle\Contract\StampServiceInterface;
 
 final class FacturacionService
 {
@@ -162,7 +239,7 @@ final class FacturacionService
 ### Timbrado
 
 ```php
-use Finkok\CfdiBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
 
 $cfdi = CfdiDocument::fromFile('/ruta/factura.xml');  // o fromString($xml)
 
@@ -218,8 +295,8 @@ $receipt->uuid === $receipt->uuidFromXml();
 ### Cancelación
 
 ```php
-use Finkok\CfdiBundle\Model\CancellationReason;
-use Finkok\CfdiBundle\Model\CancellationUuid;
+use Estratos\FinkokBundle\Model\CancellationReason;
+use Estratos\FinkokBundle\Model\CancellationUuid;
 
 $receipt = $this->finkokCancel->cancel([
     new CancellationUuid($uuid, CancellationReason::ErrorsWithoutRelation),
@@ -281,7 +358,7 @@ $status = $this->finkokCancel->getStatusOf(CfdiDocument::fromString($xmlTimbrado
 ### Aceptar o rechazar una cancelación
 
 ```php
-use Finkok\CfdiBundle\Model\AcceptRejectAnswer;
+use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
 
 $result = $this->finkokCancel->acceptReject([
     'A1B2C3D4-1111-2222-3333-444455556666' => AcceptRejectAnswer::Accepted,
@@ -296,7 +373,7 @@ $result->accepted[0]->uuid;
 ### Acuses y cancelaciones pendientes
 
 ```php
-use Finkok\CfdiBundle\Model\ReceiptType;
+use Estratos\FinkokBundle\Model\ReceiptType;
 
 // Acuse de recepción (I) o de cancelación (C)
 $acuse = $this->finkokCancel->getReceipt($uuid, ReceiptType::Cancellation);
@@ -317,7 +394,7 @@ $queued->attempts;
 ### Varios emisores en la misma aplicación
 
 ```php
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
 
 final class FacturacionService
 {
@@ -387,7 +464,7 @@ $receipt->assertSuccess();         // lanza ApiException si no fue exitosa
 Catálogo de códigos con descripción y pista de solución:
 
 ```php
-use Finkok\CfdiBundle\Model\ErrorCode;
+use Estratos\FinkokBundle\Model\ErrorCode;
 
 $code = ErrorCode::tryFrom('307');
 
@@ -411,9 +488,9 @@ Excepciones del bundle (todas implementan `FinkokExceptionInterface`):
 | `ProfileNotFoundException` | Se pidió un perfil que no existe; el mensaje lista los disponibles. |
 
 ```php
-use Finkok\CfdiBundle\Exception\FinkokExceptionInterface;
-use Finkok\CfdiBundle\Exception\TransportException;
-use Finkok\CfdiBundle\Exception\ApiException;
+use Estratos\FinkokBundle\Exception\FinkokExceptionInterface;
+use Estratos\FinkokBundle\Exception\TransportException;
+use Estratos\FinkokBundle\Exception\ApiException;
 
 try {
     $receipt = $this->finkokStamp->stamp($cfdi)->assertSuccess();
@@ -439,7 +516,7 @@ timbrado, cancelación y `get_sat_status`.
 |---|---|
 | `finkok.stamp_service` | `Contract\StampServiceInterface` |
 | `finkok.cancel_service` | `Contract\CancelServiceInterface` |
-| `finkok.credentials_provider` | `Config\CredentialsProviderInterface` |
+| `finkok.credentials_provider` | `Config\CredentialsProviderInterface` (lo aporta tu aplicación) |
 | `finkok.transport` | `Soap\SoapTransportInterface` |
 | `finkok.csd_encoder` | `Csd\CsdEncoderInterface` |
 
@@ -452,8 +529,9 @@ Puntos de extensión:
   `base64` del contenido del archivo **una sola vez**; si tu cuenta requiere el
   proceso antiguo de PEM + cifrado DES3 con la contraseña del panel, implementa
   esta interfaz y regístrala como `finkok.csd_encoder`.
-- **`CredentialsProviderInterface`**: resuelve los perfiles; puedes decorarlo para
-  cargar credenciales desde base de datos o un secret manager.
+- **`CredentialsProviderInterface`**: es el punto por el que tu aplicación aporta
+  los perfiles. Si no registras ninguno, el contenedor compila pero cualquier uso
+  falla con un mensaje que explica cómo registrarlo.
 - **Cliente HTTP**: si la aplicación define el servicio `http_client`, el bundle lo
   reutiliza (comparte pool de conexiones, proxy y CA configurados); si no, crea
   uno propio.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Xml;
+namespace Estratos\FinkokBundle\Tests\Xml;
 
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Xml\DomReader;
 use PHPUnit\Framework\TestCase;
 
 final class DomReaderTest extends TestCase

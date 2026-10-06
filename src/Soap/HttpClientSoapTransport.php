@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
-use Finkok\CfdiBundle\Exception\TransportException as FinkokTransportException;
+use Estratos\FinkokBundle\Exception\TransportException as FinkokTransportException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpClient\Exception\TransportExceptionInterface as HttpClientTransportExceptionInterface;
@@ -105,7 +105,7 @@ final class HttpClientSoapTransport implements SoapTransportInterface
         }
 
         if (!$soapResponse->isSoapEnvelope()) {
-            throw new \Finkok\CfdiBundle\Exception\UnexpectedResponseException(
+            throw new \Estratos\FinkokBundle\Exception\UnexpectedResponseException(
                 sprintf(
                     'Finkok respondió HTTP %d con un cuerpo que no es un envelope SOAP%s al invocar %s en %s. '
                     .'Verifica que la URL corresponda al Web Service esperado '

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap;
+namespace Estratos\FinkokBundle\Soap;
 
-use Finkok\CfdiBundle\Exception\SoapFaultException;
-use Finkok\CfdiBundle\Exception\UnexpectedResponseException;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Exception\SoapFaultException;
+use Estratos\FinkokBundle\Exception\UnexpectedResponseException;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Respuesta SOAP de Finkok con acceso tolerante a prefijos.

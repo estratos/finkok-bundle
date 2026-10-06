@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
 /**
  * Catálogo de códigos de incidencia documentados por Finkok.

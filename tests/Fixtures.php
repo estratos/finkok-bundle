@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests;
+namespace Estratos\FinkokBundle\Tests;
 
 /**
  * Acceso a los archivos de prueba.

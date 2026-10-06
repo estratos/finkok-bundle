@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\PendingCancellations;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\PendingCancellations;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Construye un {@see PendingCancellations} desde el resultado de `get_pending` o

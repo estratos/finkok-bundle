@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
 /**
  * Colección inmutable de {@see Incidence} con ayudas de consulta.

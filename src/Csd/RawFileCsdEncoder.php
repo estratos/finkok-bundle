@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Csd;
+namespace Estratos\FinkokBundle\Csd;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Exception\ValidationException;
 
 /**
  * Codificador CSD por defecto: base64 del contenido del archivo, una sola vez.

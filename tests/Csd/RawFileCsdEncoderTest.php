@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Csd;
+namespace Estratos\FinkokBundle\Tests\Csd;
 
-use Finkok\CfdiBundle\Csd\RawFileCsdEncoder;
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Tests\Concerns\ManagesTempFiles;
+use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Tests\Concerns\ManagesTempFiles;
 use PHPUnit\Framework\TestCase;
 
 final class RawFileCsdEncoderTest extends TestCase

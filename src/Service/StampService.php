@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Service;
+namespace Estratos\FinkokBundle\Service;
 
-use Finkok\CfdiBundle\Config\CredentialsInterface;
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
-use Finkok\CfdiBundle\Config\EndpointResolver;
-use Finkok\CfdiBundle\Config\Service;
-use Finkok\CfdiBundle\Contract\StampServiceInterface;
-use Finkok\CfdiBundle\Hydrator\QueryPendingResultHydrator;
-use Finkok\CfdiBundle\Hydrator\StampReceiptHydrator;
-use Finkok\CfdiBundle\Model\QueryPendingResult;
-use Finkok\CfdiBundle\Model\StampReceipt;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
-use Finkok\CfdiBundle\Soap\Value\Base64Value;
-use Finkok\CfdiBundle\Xml\CfdiDocument;
-use Finkok\CfdiBundle\Xml\CfdiPreflightValidator;
+use Estratos\FinkokBundle\Config\CredentialsInterface;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\EndpointResolver;
+use Estratos\FinkokBundle\Config\Service;
+use Estratos\FinkokBundle\Contract\StampServiceInterface;
+use Estratos\FinkokBundle\Hydrator\QueryPendingResultHydrator;
+use Estratos\FinkokBundle\Hydrator\StampReceiptHydrator;
+use Estratos\FinkokBundle\Model\QueryPendingResult;
+use Estratos\FinkokBundle\Model\StampReceipt;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Soap\Value\Base64Value;
+use Estratos\FinkokBundle\Xml\CfdiDocument;
+use Estratos\FinkokBundle\Xml\CfdiPreflightValidator;
 use Psr\Log\LoggerInterface;
 
 /**

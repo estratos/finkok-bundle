@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Soap;
+namespace Estratos\FinkokBundle\Tests\Soap;
 
-use Finkok\CfdiBundle\Soap\SoapNamespaces;
-use Finkok\CfdiBundle\Soap\SoapRequest;
-use Finkok\CfdiBundle\Soap\Value\AttributeElement;
-use Finkok\CfdiBundle\Soap\Value\Base64EncodedValue;
-use Finkok\CfdiBundle\Soap\Value\Base64Value;
-use Finkok\CfdiBundle\Soap\Value\ComplexValue;
-use Finkok\CfdiBundle\Soap\Value\RepeatedValue;
+use Estratos\FinkokBundle\Soap\SoapNamespaces;
+use Estratos\FinkokBundle\Soap\SoapRequest;
+use Estratos\FinkokBundle\Soap\Value\AttributeElement;
+use Estratos\FinkokBundle\Soap\Value\Base64EncodedValue;
+use Estratos\FinkokBundle\Soap\Value\Base64Value;
+use Estratos\FinkokBundle\Soap\Value\ComplexValue;
+use Estratos\FinkokBundle\Soap\Value\RepeatedValue;
 use PHPUnit\Framework\TestCase;
 
 final class SoapRequestTest extends TestCase

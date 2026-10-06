@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap\Value;
+namespace Estratos\FinkokBundle\Soap\Value;
 
-use Finkok\CfdiBundle\Soap\SoapValueInterface;
-use Finkok\CfdiBundle\Soap\SoapWriter;
+use Estratos\FinkokBundle\Soap\SoapValueInterface;
+use Estratos\FinkokBundle\Soap\SoapWriter;
 
 /**
  * Valor binario codificado en base64 (`xs:base64Binary`).
@@ -37,7 +37,7 @@ final class Base64Value implements SoapValueInterface
         $contents = @file_get_contents($path);
 
         if (false === $contents) {
-            throw new \Finkok\CfdiBundle\Exception\ValidationException(
+            throw new \Estratos\FinkokBundle\Exception\ValidationException(
                 sprintf('No fue posible leer el archivo binario "%s".', $path),
             );
         }

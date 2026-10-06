@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Config;
+namespace Estratos\FinkokBundle\Tests\Config;
 
-use Finkok\CfdiBundle\Config\Credentials;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Config\Service;
-use Finkok\CfdiBundle\Exception\ConfigurationException;
-use Finkok\CfdiBundle\Tests\Concerns\ManagesTempFiles;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Config\Service;
+use Estratos\FinkokBundle\Exception\ConfigurationException;
+use Estratos\FinkokBundle\Tests\Concerns\ManagesTempFiles;
 use PHPUnit\Framework\TestCase;
 
 final class CredentialsTest extends TestCase

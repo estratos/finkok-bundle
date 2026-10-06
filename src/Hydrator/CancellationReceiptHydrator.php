@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\CancellationFolio;
-use Finkok\CfdiBundle\Model\CancellationReceipt;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\CancellationFolio;
+use Estratos\FinkokBundle\Model\CancellationReceipt;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Construye un {@see CancellationReceipt} desde el resultado de `cancel` u

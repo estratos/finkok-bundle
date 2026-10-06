@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\DependencyInjection;
+namespace Estratos\FinkokBundle\DependencyInjection;
 
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Config\Service;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Config\Service;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -22,66 +22,11 @@ final class Configuration implements ConfigurationInterface
         $root
             ->info('Web Services de Finkok para timbrado y cancelación de CFDI.')
             ->children()
-                ->scalarNode('default_profile')
-                    ->defaultNull()
-                    ->info('Perfil usado cuando una llamada no indica uno explícitamente.')
-                    ->example('matriz')
-                ->end()
-                ->arrayNode('profiles')
-                    ->info('Perfiles de credenciales; permite operar varios RFC emisores desde la misma aplicación.')
-                    ->useAttributeAsKey('name')
-                    ->requiresAtLeastOneElement()
-                    ->arrayPrototype()
-                        ->children()
-                            ->scalarNode('username')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                                ->info('Usuario del panel de Finkok.')
-                            ->end()
-                            ->scalarNode('password')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                                ->info('Contraseña del panel de Finkok.')
-                            ->end()
-                            ->scalarNode('taxpayer_id')
-                                ->defaultNull()
-                                ->info('RFC del emisor. Obligatorio para cancelar; opcional para timbrar.')
-                                ->example('EKU9003173C9')
-                            ->end()
-                            ->enumNode('environment')
-                                ->values(array_map(static fn (Environment $case): string => $case->value, Environment::cases()))
-                                ->defaultValue(Environment::Demo->value)
-                                ->info('Ambiente de Finkok al que apunta el perfil.')
-                            ->end()
-                            ->scalarNode('certificate')
-                                ->defaultNull()
-                                ->info('Ruta al archivo .cer o su contenido en PEM. Opcional: solo se usa al cancelar.')
-                            ->end()
-                            ->scalarNode('private_key')
-                                ->defaultNull()
-                                ->info('Ruta al archivo .key o su contenido en PEM. Opcional: solo se usa al cancelar.')
-                            ->end()
-                            ->scalarNode('private_key_passphrase')
-                                ->defaultNull()
-                                ->info('Contraseña propia de la llave privada, si el codificador CSD la necesita.')
-                            ->end()
-                            ->arrayNode('endpoints')
-                                ->info('Sobrescritura de URLs para este perfil (por ejemplo si un emisor usa otro host).')
-                                ->useAttributeAsKey('service')
-                                ->arrayPrototype()
-                                    ->children()
-                                        ->scalarNode('demo')->defaultNull()->end()
-                                        ->scalarNode('production')->defaultNull()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->validate()
-                            ->ifTrue(static fn (array $profile): bool => (null === $profile['certificate']) !== (null === $profile['private_key']))
-                            ->thenInvalid('El perfil debe definir "certificate" y "private_key" juntos, o ninguno de los dos. Valor recibido: %s')
-                        ->end()
-                    ->end()
-                ->end()
+                // Las credenciales NO se configuran en este árbol.
+                // Los perfiles los crea la aplicación que consume los servicios y se
+                // inyectan mediante un servicio CredentialsProviderInterface: pueden
+                // venir de variables de entorno, de la base de datos o del inquilino
+                // activo, y nunca deben quedar embebidos en la configuración del bundle.
                 ->arrayNode('endpoints')
                     ->info('URLs de los servicios. Los valores por defecto apuntan a los hosts oficiales de Finkok.')
                     ->addDefaultsIfNotSet()
@@ -151,11 +96,6 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-            ->validate()
-                ->ifTrue(static fn (array $config): bool => null !== $config['default_profile']
-                    && !isset($config['profiles'][$config['default_profile']]))
-                ->thenInvalid('El valor de "default_profile" debe existir dentro de "profiles". Valor recibido: %s')
             ->end();
 
         return $treeBuilder;

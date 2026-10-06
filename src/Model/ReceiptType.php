@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
 /**
  * Tipo de acuse que devuelve el método `get_receipt` (parámetro `type`).

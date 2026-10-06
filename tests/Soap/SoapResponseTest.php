@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Soap;
+namespace Estratos\FinkokBundle\Tests\Soap;
 
-use Finkok\CfdiBundle\Exception\SoapFaultException;
-use Finkok\CfdiBundle\Soap\SoapResponse;
-use Finkok\CfdiBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Exception\SoapFaultException;
+use Estratos\FinkokBundle\Soap\SoapResponse;
+use Estratos\FinkokBundle\Tests\Fixtures;
 use PHPUnit\Framework\TestCase;
 
 final class SoapResponseTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
 /**
  * Contrato común de los resultados devueltos por los Web Services de Finkok.
@@ -46,10 +46,10 @@ interface FinkokResultInterface
     public function hasErrorCode(ErrorCode $code): bool;
 
     /**
-     * Lanza {@see \Finkok\CfdiBundle\Exception\ApiException} si la operación no
+     * Lanza {@see \Estratos\FinkokBundle\Exception\ApiException} si la operación no
      * fue exitosa.
      *
-     * @throws \Finkok\CfdiBundle\Exception\ApiException
+     * @throws \Estratos\FinkokBundle\Exception\ApiException
      */
     public function assertSuccess(): static;
 }

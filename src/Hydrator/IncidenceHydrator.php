@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Hydrator;
+namespace Estratos\FinkokBundle\Hydrator;
 
-use Finkok\CfdiBundle\Model\Incidence;
-use Finkok\CfdiBundle\Model\IncidenceCollection;
-use Finkok\CfdiBundle\Xml\DomReader;
+use Estratos\FinkokBundle\Model\Incidence;
+use Estratos\FinkokBundle\Model\IncidenceCollection;
+use Estratos\FinkokBundle\Xml\DomReader;
 
 /**
  * Convierte el nodo `<Incidencias>` de una respuesta de Finkok en una colección

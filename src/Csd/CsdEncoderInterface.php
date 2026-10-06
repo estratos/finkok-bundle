@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Csd;
+namespace Estratos\FinkokBundle\Csd;
 
 /**
  * Convierte archivos CSD (`.cer` / `.key`) al valor exacto que espera el

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
 /**
  * Motivos de cancelación del CFDI 4.0 (atributo `Motivo` del nodo `UUID`).

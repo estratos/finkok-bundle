@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\Soap;
+namespace Estratos\FinkokBundle\Tests\Soap;
 
-use Finkok\CfdiBundle\Exception\SoapFaultException;
-use Finkok\CfdiBundle\Exception\TransportException;
-use Finkok\CfdiBundle\Exception\UnexpectedResponseException;
-use Finkok\CfdiBundle\Soap\HttpClientSoapTransport;
-use Finkok\CfdiBundle\Soap\SoapRequest;
-use Finkok\CfdiBundle\Soap\Value\Base64Value;
-use Finkok\CfdiBundle\Tests\Concerns\ReadsHttpHeaders;
-use Finkok\CfdiBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Exception\SoapFaultException;
+use Estratos\FinkokBundle\Exception\TransportException;
+use Estratos\FinkokBundle\Exception\UnexpectedResponseException;
+use Estratos\FinkokBundle\Soap\HttpClientSoapTransport;
+use Estratos\FinkokBundle\Soap\SoapRequest;
+use Estratos\FinkokBundle\Soap\Value\Base64Value;
+use Estratos\FinkokBundle\Tests\Concerns\ReadsHttpHeaders;
+use Estratos\FinkokBundle\Tests\Fixtures;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Model;
+namespace Estratos\FinkokBundle\Model;
 
-use Finkok\CfdiBundle\Model\Concerns\AssertsSuccess;
+use Estratos\FinkokBundle\Model\Concerns\AssertsSuccess;
 
 /**
  * Acuse de recepción devuelto por el Web Service de timbrado.

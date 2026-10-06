@@ -2,38 +2,46 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Tests\DependencyInjection;
+namespace Estratos\FinkokBundle\Tests\DependencyInjection;
 
-use Finkok\CfdiBundle\Config\CredentialsProviderInterface;
-use Finkok\CfdiBundle\Config\Environment;
-use Finkok\CfdiBundle\Contract\CancelServiceInterface;
-use Finkok\CfdiBundle\Contract\StampServiceInterface;
-use Finkok\CfdiBundle\Csd\CsdEncoderInterface;
-use Finkok\CfdiBundle\DependencyInjection\Compiler\WiringPass;
-use Finkok\CfdiBundle\DependencyInjection\FinkokExtension;
-use Finkok\CfdiBundle\Service\CancelService;
-use Finkok\CfdiBundle\Service\StampService;
-use Finkok\CfdiBundle\Soap\SoapTransportInterface;
-use Finkok\CfdiBundle\Tests\Fixtures;
+use Estratos\FinkokBundle\Config\Credentials;
+use Estratos\FinkokBundle\Config\CredentialsProvider;
+use Estratos\FinkokBundle\Config\CredentialsProviderInterface;
+use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Config\UnconfiguredCredentialsProvider;
+use Estratos\FinkokBundle\Contract\CancelServiceInterface;
+use Estratos\FinkokBundle\Contract\StampServiceInterface;
+use Estratos\FinkokBundle\Csd\CsdEncoderInterface;
+use Estratos\FinkokBundle\DependencyInjection\Compiler\WiringPass;
+use Estratos\FinkokBundle\DependencyInjection\Configuration;
+use Estratos\FinkokBundle\DependencyInjection\FinkokExtension;
+use Estratos\FinkokBundle\Exception\ConfigurationException;
+use Estratos\FinkokBundle\Service\CancelService;
+use Estratos\FinkokBundle\Service\StampService;
+use Estratos\FinkokBundle\Soap\SoapTransportInterface;
+use Estratos\FinkokBundle\Tests\Fixtures;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
+/**
+ * El bundle no lee credenciales de su configuración: los perfiles los crea la
+ * aplicación y se inyectan como un servicio CredentialsProviderInterface.
+ */
 final class FinkokExtensionTest extends TestCase
 {
     /**
      * Carga la extensión y ejecuta el compiler pass sin compilar.
      *
-     * Se usa para inspeccionar las definiciones tal como las crea la extensión:
-     * al compilar, Symfony inyecta los servicios privados en los públicos y los
+     * Se usa para inspeccionar las definiciones tal como las crea la extensión: al
+     * compilar, Symfony inyecta los servicios privados en los públicos y los
      * renombra, de modo que los ids internos dejan de existir.
      *
      * @param array<string, mixed> $config
      */
-    private function load(array $config, ?ContainerBuilder $container = null): ContainerBuilder
+    private function load(array $config = [], ?ContainerBuilder $container = null): ContainerBuilder
     {
         $container ??= new ContainerBuilder();
         $container->setParameter('kernel.debug', false);
@@ -47,7 +55,7 @@ final class FinkokExtensionTest extends TestCase
     /**
      * @param array<string, mixed> $config
      */
-    private function compile(array $config, ?ContainerBuilder $container = null): ContainerBuilder
+    private function compile(array $config = [], ?ContainerBuilder $container = null): ContainerBuilder
     {
         $container = $this->load($config, $container);
         $container->compile();
@@ -56,58 +64,149 @@ final class FinkokExtensionTest extends TestCase
     }
 
     /**
-     * @return array<string, mixed>
+     * Registra los perfiles como lo haría la aplicación que consume los servicios.
      */
-    private function minimalConfig(): array
+    private function registerAppProfiles(ContainerBuilder $container): void
     {
-        return [
-            'default_profile' => 'matriz',
-            'profiles' => [
-                'matriz' => [
-                    'username' => 'usuario@demo.com',
-                    'password' => 'clave',
-                    'taxpayer_id' => 'EKU9003173C9',
-                    'environment' => 'demo',
-                ],
-                'sucursal' => [
-                    'username' => 'sucursal@demo.com',
-                    'password' => 'otra',
-                    'environment' => 'production',
-                ],
-            ],
-        ];
+        $container->register('app.finkok.credentials.matriz', Credentials::class)
+            ->setArguments(['matriz', 'usuario@demo.com', 'clave-secreta', 'EKU9003173C9', Environment::Demo]);
+
+        $container->register('app.finkok.credentials.sucursal', Credentials::class)
+            ->setArguments(['sucursal', 'sucursal@demo.com', 'otra-clave', 'MISC491214B86', Environment::Production]);
     }
 
-    public function testCompilaYExponeLosServiciosAutowireables(): void
+    /**
+     * Registra el proveedor de credenciales que la aplicación expone al bundle.
+     */
+    private function registerAppCredentials(ContainerBuilder $container): void
     {
-        $container = $this->compile($this->minimalConfig());
+        $this->registerAppProfiles($container);
+
+        $container->register(CredentialsProviderInterface::class, CredentialsProvider::class)
+            ->setArguments([
+                [
+                    'matriz' => new Reference('app.finkok.credentials.matriz'),
+                    'sucursal' => new Reference('app.finkok.credentials.sucursal'),
+                ],
+                'matriz',
+            ])
+            ->setPublic(true);
+    }
+
+    public function testLaConfiguracionDelBundleNoAdmiteCredenciales(): void
+    {
+        $children = array_keys((new Configuration())->getConfigTreeBuilder()->buildTree()->getChildren());
+        sort($children);
+
+        self::assertSame(['endpoints', 'http', 'preflight'], $children);
+        self::assertNotContains('profiles', $children);
+        self::assertNotContains('default_profile', $children);
+    }
+
+    public function testCompilaSinNingunaConfiguracionYExponeLosServicios(): void
+    {
+        $container = $this->compile();
 
         self::assertInstanceOf(StampService::class, $container->get(StampServiceInterface::class));
         self::assertInstanceOf(CancelService::class, $container->get(CancelServiceInterface::class));
         self::assertInstanceOf(SoapTransportInterface::class, $container->get(SoapTransportInterface::class));
         self::assertInstanceOf(CsdEncoderInterface::class, $container->get(CsdEncoderInterface::class));
-        self::assertInstanceOf(CredentialsProviderInterface::class, $container->get(CredentialsProviderInterface::class));
     }
 
-    public function testRegistraCadaPerfilComoUnServicioIndependiente(): void
+    public function testSinProveedorRegistradoElContenedorCompilaPeroFallaAlUsarse(): void
     {
-        $container = $this->load($this->minimalConfig());
+        $container = $this->compile();
 
-        self::assertTrue($container->hasDefinition('finkok.credentials.matriz'));
-        self::assertTrue($container->hasDefinition('finkok.credentials.sucursal'));
+        $provider = $container->get(CredentialsProviderInterface::class);
 
-        $container->compile();
+        self::assertInstanceOf(UnconfiguredCredentialsProvider::class, $provider);
+        self::assertSame([], $provider->names());
+        self::assertFalse($provider->has('matriz'));
+
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessageMatches('/CredentialsProviderInterface/');
+        $provider->get();
+    }
+
+    public function testElServicioDeTimbradoPropagaElMensajeCuandoNoHayCredenciales(): void
+    {
+        $container = $this->compile();
+        $stamp = $container->get(StampServiceInterface::class);
+
+        try {
+            $stamp->stamp(Fixtures::signedCfdi());
+            self::fail('Se esperaba ConfigurationException.');
+        } catch (ConfigurationException $exception) {
+            self::assertStringContainsString('no ha registrado un proveedor de credenciales', $exception->getMessage());
+            self::assertStringContainsString('README', $exception->getMessage());
+        }
+    }
+
+    public function testUsaElProveedorDeCredencialesDeLaAplicacion(): void
+    {
+        $container = new ContainerBuilder();
+        $this->registerAppCredentials($container);
+        $container = $this->compile([], $container);
+
         $provider = $container->get(CredentialsProviderInterface::class);
 
         self::assertSame(['matriz', 'sucursal'], $provider->names());
-        self::assertSame('matriz', $provider->get()->name());
+        self::assertSame('matriz', $provider->default()->name());
         self::assertSame(Environment::Production, $provider->get('sucursal')->environment());
-        self::assertSame('EKU9003173C9', $provider->get('matriz')->taxpayerId());
     }
 
-    public function testAplicaLosValoresPorDefectoDeLaConfiguracion(): void
+    public function testElProveedorDeLaAplicacionLlegaHastaLaPeticionHttp(): void
     {
-        $factory = $this->load($this->minimalConfig())->getDefinition('finkok.http_client_factory');
+        $recorded = [];
+        $client = new MockHttpClient(function (string $method, string $url, array $options) use (&$recorded): MockResponse {
+            $recorded[] = ['url' => $url, 'body' => (string) ($options['body'] ?? '')];
+
+            return new MockResponse(Fixtures::response('stamp-success'));
+        });
+
+        $container = new ContainerBuilder();
+        $this->registerAppCredentials($container);
+        $container->register('http_client', MockHttpClient::class)->setSynthetic(true)->setPublic(true);
+        $container = $this->compile([], $container);
+        $container->set('http_client', $client);
+
+        $receipt = $container->get(StampServiceInterface::class)->stamp(Fixtures::signedCfdi());
+
+        self::assertTrue($receipt->isSuccess());
+        self::assertSame('7D162D12-F6B6-4BDE-BC8A-BABC4331919A', $receipt->uuid);
+        self::assertCount(1, $recorded);
+        self::assertSame('https://demo-facturacion.finkok.com/servicios/soap/stamp', $recorded[0]['url']);
+        self::assertStringContainsString('<tns:username>usuario@demo.com</tns:username>', $recorded[0]['body']);
+    }
+
+    public function testAceptaUnAliasDeLaAplicacionComoProveedor(): void
+    {
+        $container = new ContainerBuilder();
+        $this->registerAppProfiles($container);
+        $container->register('app.credentials', CredentialsProvider::class)
+            ->setArguments([['matriz' => new Reference('app.finkok.credentials.matriz')], 'matriz']);
+        $container->setAlias(CredentialsProviderInterface::class, 'app.credentials')->setPublic(true);
+
+        $container = $this->compile([], $container);
+
+        self::assertSame('matriz', $container->get(CredentialsProviderInterface::class)->default()->name());
+    }
+
+    public function testConectaElClienteHttpDeLaAplicacionCuandoExiste(): void
+    {
+        $container = new ContainerBuilder();
+        $container->register('http_client', MockHttpClient::class)->setPublic(true);
+
+        $factory = $this->load([], $container)->getDefinition('finkok.http_client_factory');
+        $base = $factory->getArgument('$base');
+
+        self::assertInstanceOf(Reference::class, $base);
+        self::assertSame('http_client', (string) $base);
+    }
+
+    public function testAplicaLosValoresPorDefectoDeLaInfraestructura(): void
+    {
+        $factory = $this->load()->getDefinition('finkok.http_client_factory');
 
         self::assertSame(30.0, $factory->getArgument('$options')['timeout']);
         self::assertTrue($factory->getArgument('$retryEnabled'));
@@ -118,44 +217,9 @@ final class FinkokExtensionTest extends TestCase
         );
     }
 
-    public function testConectaElClienteHttpDeLaAplicacionCuandoExiste(): void
-    {
-        $container = new ContainerBuilder();
-        $container->register('http_client', MockHttpClient::class)->setPublic(true);
-
-        $factory = $this->load($this->minimalConfig(), $container)->getDefinition('finkok.http_client_factory');
-
-        $base = $factory->getArgument('$base');
-
-        self::assertInstanceOf(Reference::class, $base);
-        self::assertSame('http_client', (string) $base);
-    }
-
-    public function testUsaElClienteHttpDeLaAplicacionDeExtremoAExtremo(): void
-    {
-        $recorded = [];
-        $client = new MockHttpClient(function (string $method, string $url, array $options) use (&$recorded): MockResponse {
-            $recorded[] = $url;
-
-            return new MockResponse(Fixtures::response('stamp-success'));
-        });
-
-        $container = new ContainerBuilder();
-        $container->register('http_client', MockHttpClient::class)->setSynthetic(true)->setPublic(true);
-        $container = $this->load($this->minimalConfig(), $container);
-        $container->compile();
-        $container->set('http_client', $client);
-
-        $receipt = $container->get(StampServiceInterface::class)->stamp(Fixtures::signedCfdi());
-
-        self::assertTrue($receipt->isSuccess());
-        self::assertSame('7D162D12-F6B6-4BDE-BC8A-BABC4331919A', $receipt->uuid);
-        self::assertSame(['https://demo-facturacion.finkok.com/servicios/soap/stamp'], $recorded);
-    }
-
     public function testRegistraUnLoggerNuloCuandoLaAplicacionNoTieneLogger(): void
     {
-        $container = $this->load($this->minimalConfig());
+        $container = $this->load();
 
         self::assertTrue($container->hasDefinition(WiringPass::NULL_LOGGER_SERVICE));
         self::assertSame(WiringPass::NULL_LOGGER_SERVICE, (string) $container->getAlias(WiringPass::LOGGER_SERVICE));
@@ -166,77 +230,18 @@ final class FinkokExtensionTest extends TestCase
         $container = new ContainerBuilder();
         $container->register('logger', \Psr\Log\NullLogger::class)->setPublic(true);
 
-        $container = $this->load($this->minimalConfig(), $container);
+        $container = $this->load([], $container);
 
         self::assertSame('logger', (string) $container->getAlias(WiringPass::LOGGER_SERVICE));
     }
 
-    public function testExigeAlMenosUnPerfil(): void
-    {
-        $this->expectException(InvalidConfigurationException::class);
-
-        $this->load(['profiles' => []]);
-    }
-
-    public function testElPerfilPorDefectoDebeExistir(): void
-    {
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessageMatches('/default_profile/');
-
-        $this->load([
-            'default_profile' => 'fantasma',
-            'profiles' => [
-                'matriz' => ['username' => 'usuario', 'password' => 'clave'],
-            ],
-        ]);
-    }
-
-    public function testElCertificadoYLaLlaveDebenDeclararseJuntos(): void
-    {
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessageMatches('/certificate.*private_key/s');
-
-        $this->load([
-            'profiles' => [
-                'matriz' => [
-                    'username' => 'usuario',
-                    'password' => 'clave',
-                    'certificate' => '/ruta/emisor.cer',
-                ],
-            ],
-        ]);
-    }
-
-    public function testExigeUsuarioYContrasenaEnCadaPerfil(): void
-    {
-        $this->expectException(InvalidConfigurationException::class);
-
-        $this->load([
-            'profiles' => [
-                'matriz' => ['username' => 'usuario'],
-            ],
-        ]);
-    }
-
-    public function testRechazaUnAmbienteDesconocido(): void
-    {
-        $this->expectException(InvalidConfigurationException::class);
-
-        $this->load([
-            'profiles' => [
-                'matriz' => ['username' => 'usuario', 'password' => 'clave', 'environment' => 'staging'],
-            ],
-        ]);
-    }
-
     public function testPermiteSobrescribirEndpointsTimeoutYValidacionPrevia(): void
     {
-        $config = $this->minimalConfig();
-        $config['endpoints'] = ['stamp' => ['demo' => 'https://proxy.test/stamp']];
-        $config['http'] = ['timeout' => 12.5];
-        $config['preflight'] = ['enabled' => false];
-
-        $container = $this->load($config);
+        $container = $this->load([
+            'endpoints' => ['stamp' => ['demo' => 'https://proxy.test/stamp']],
+            'http' => ['timeout' => 12.5],
+            'preflight' => ['enabled' => false],
+        ]);
 
         $endpoints = $container->getDefinition('finkok.endpoint_resolver')->getArgument(0);
 
@@ -250,48 +255,11 @@ final class FinkokExtensionTest extends TestCase
         self::assertFalse($container->getDefinition('finkok.preflight_validator')->getArgument(0));
     }
 
-    public function testLosPerfilesConNombresRarosGeneranIdsValidos(): void
-    {
-        $container = $this->load([
-            'profiles' => [
-                'sucursal norte/x' => ['username' => 'usuario', 'password' => 'clave'],
-            ],
-        ]);
-
-        self::assertTrue($container->hasDefinition('finkok.credentials.sucursal_norte_x'));
-
-        $container->compile();
-        $provider = $container->get(CredentialsProviderInterface::class);
-
-        self::assertSame(['sucursal norte/x'], $provider->names());
-        self::assertSame('sucursal norte/x', $provider->get()->name());
-    }
-
-    public function testLosNombresQueColisionanNoSePisan(): void
-    {
-        $container = $this->load([
-            'profiles' => [
-                'a/b' => ['username' => 'uno', 'password' => 'clave'],
-                'a_b' => ['username' => 'dos', 'password' => 'clave'],
-            ],
-        ]);
-
-        $definitions = array_filter(
-            array_keys($container->getDefinitions()),
-            static fn (string $id): bool => str_starts_with($id, 'finkok.credentials.'),
-        );
-
-        self::assertCount(2, $definitions);
-    }
-
     public function testConfiguraElTimeoutDelTransporteYElUserAgent(): void
     {
-        $config = $this->minimalConfig();
-        $config['http']['timeout'] = 7.5;
-        $config['http']['user_agent'] = 'mi-app/2.0';
-        $config['http']['log_payloads'] = true;
-
-        $arguments = $this->load($config)->getDefinition('finkok.transport')->getArguments();
+        $arguments = $this->load([
+            'http' => ['timeout' => 7.5, 'user_agent' => 'mi-app/2.0', 'log_payloads' => true],
+        ])->getDefinition('finkok.transport')->getArguments();
 
         self::assertSame(7.5, $arguments[1]);
         self::assertTrue($arguments[3]);
@@ -300,12 +268,17 @@ final class FinkokExtensionTest extends TestCase
 
     public function testSePuedeDesactivarElReintentoAutomatico(): void
     {
-        $config = $this->minimalConfig();
-        $config['http'] = ['retry' => ['enabled' => false, 'max_retries' => 0]];
-
-        $factory = $this->load($config)->getDefinition('finkok.http_client_factory');
+        $factory = $this->load(['http' => ['retry' => ['enabled' => false, 'max_retries' => 0]]])
+            ->getDefinition('finkok.http_client_factory');
 
         self::assertFalse($factory->getArgument('$retryEnabled'));
         self::assertSame(0, $factory->getArgument('$maxRetries'));
+    }
+
+    public function testRechazaOpcionesDeConfiguracionDesconocidas(): void
+    {
+        $this->expectException(\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException::class);
+
+        $this->load(['profiles' => ['matriz' => ['username' => 'u', 'password' => 'p']]]);
     }
 }

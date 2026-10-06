@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap\Value;
+namespace Estratos\FinkokBundle\Soap\Value;
 
-use Finkok\CfdiBundle\Exception\ValidationException;
-use Finkok\CfdiBundle\Soap\SoapValueInterface;
+use Estratos\FinkokBundle\Exception\ValidationException;
+use Estratos\FinkokBundle\Soap\SoapValueInterface;
 
 /**
  * Fábrica de valores SOAP a partir de escalares.

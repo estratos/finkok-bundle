@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Finkok\CfdiBundle\Soap\Value;
+namespace Estratos\FinkokBundle\Soap\Value;
 
-use Finkok\CfdiBundle\Soap\SoapValueInterface;
-use Finkok\CfdiBundle\Soap\SoapWriter;
+use Estratos\FinkokBundle\Soap\SoapValueInterface;
+use Estratos\FinkokBundle\Soap\SoapWriter;
 
 /**
  * Valor textual simple (`xs:string`, `xs:int`, `xs:boolean`, …).

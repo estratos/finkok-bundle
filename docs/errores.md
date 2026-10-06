@@ -14,7 +14,7 @@ cancelación, con la reacción recomendada y el equivalente en el bundle.
 
 Viajan dentro de `<Incidencias><Incidencia>` en una respuesta SOAP correcta.
 Se leen con `StampReceipt::getIncidences()` y se tipifican con
-`Finkok\CfdiBundle\Model\ErrorCode`.
+`Estratos\FinkokBundle\Model\ErrorCode`.
 
 | Código | `CodigoError` | Significado | Cómo resolverlo | Enum |
 |---|---|---|---|---|
@@ -61,7 +61,7 @@ $code?->isAlreadyStamped();       // 307 y 707
 
 Estos códigos **no** son incidencias ni el `EstatusUUID` del SAT: son la
 respuesta propia del servicio de cancelación de Finkok y llegan en `CodEstatus`.
-Se tipifican con `Finkok\CfdiBundle\Model\CancellationStatusCode`.
+Se tipifican con `Estratos\FinkokBundle\Model\CancellationStatusCode`.
 
 | Código | Significado | Cómo resolverlo | Enum |
 |---|---|---|---|
