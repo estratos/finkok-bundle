@@ -30,30 +30,79 @@ final class CancellationReceiptTest extends TestCase
         self::assertSame(CancellationStatusCode::RequestAccepted, $receipt->cancellationStatusCode());
     }
 
-    public function testUnFolio205QuedaEnProceso(): void
+    public function testElEnProcesoSeLeeDeEstatusCancelacionNoDelCodigo(): void
     {
+        // Finkok devuelve 201 (petición realizada) junto al texto «En proceso»:
+        // la cancelación todavía no es definitiva.
         $receipt = new CancellationReceipt(
-            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '205', 'En proceso')],
+            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '201', 'En proceso')],
             status: '201',
         );
 
-        self::assertTrue($receipt->isSuccess());
+        $folio = $receipt->folios[0];
+
+        self::assertTrue($receipt->isSuccess(), 'La petición sí fue aceptada.');
         self::assertTrue($receipt->isInProcess());
+        self::assertTrue($folio->isRequestAccepted());
+        self::assertFalse($folio->isCancelled(), 'En proceso no es cancelado.');
         self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->pendingUuids());
+        self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->acceptedUuids());
         self::assertSame([], $receipt->cancelledUuids());
     }
 
-    public function testUnFolio203SeReportaComoNoCancelableYRechazado(): void
+    public function testUnFolio205ReportaQueElUuidNoExiste(): void
     {
+        $folio = new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '205');
+
+        self::assertTrue($folio->isNotFound());
+        self::assertTrue($folio->isRejected());
+        self::assertFalse($folio->isInProcess(), '205 no significa «en proceso».');
+        self::assertTrue($folio->statusCode()?->isTransient());
+    }
+
+    public function testUn201SinEstatusTextualNoSeAsumeComoCancelado(): void
+    {
+        // Advertencia explícita de Finkok: el 201 confirma la petición, no la
+        // cancelación. Sin el texto del SAT no se puede afirmar que se canceló.
+        $folio = new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '201');
+
+        self::assertTrue($folio->isRequestAccepted());
+        self::assertFalse($folio->isCancelled());
+        self::assertFalse($folio->isInProcess());
+    }
+
+    public function testUn202SiEsCancelacionDefinitiva(): void
+    {
+        $folio = new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '202');
+
+        self::assertTrue($folio->isCancelled(), '202 = UUID previamente cancelado.');
+        self::assertTrue($folio->isRequestAccepted());
+    }
+
+    public function testUnFolio204SeReportaComoNoCancelableYRechazado(): void
+    {
+        // 204 = «UUID no aplicable para cancelación»; el texto acompaña al código.
         $receipt = new CancellationReceipt(
-            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '203', 'No cancelable')],
-            status: '203',
+            folios: [new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '204', 'No cancelable')],
+            status: '204',
         );
 
         self::assertFalse($receipt->isSuccess());
         self::assertTrue($receipt->folios[0]->isNotCancellable());
+        self::assertTrue($receipt->folios[0]->isRejected());
         self::assertSame(['A1B2C3D4-1111-2222-3333-444455556666'], $receipt->rejectedUuids());
-        self::assertSame(CancellationStatusCode::IssuerMismatch, $receipt->cancellationStatusCode());
+        self::assertSame(CancellationStatusCode::NotApplicable, $receipt->cancellationStatusCode());
+    }
+
+    public function testUnFolio203IndicaQueNoSeEncontroElUuidONoEsDelEmisor(): void
+    {
+        $folio = new CancellationFolio('A1B2C3D4-1111-2222-3333-444455556666', '203');
+
+        self::assertTrue($folio->isNotFound());
+        self::assertTrue($folio->isRejected());
+        self::assertFalse($folio->isCancelled());
+        self::assertFalse($folio->isInProcess());
+        self::assertSame('No encontrado o no corresponde en el emisor.', $folio->getStatusDescription());
     }
 
     public function testElCodigo205DeUuidNoEncontradoNoEsExito(): void

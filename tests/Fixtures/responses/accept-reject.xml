@@ -5,13 +5,13 @@
       <tns:accept_rejectResult>
         <s0:aceptacion>
           <s0:Acepta>
-            <s0:status>201</s0:status>
+            <s0:status>1000</s0:status>
             <s0:uuid>7D162D12-F6B6-4BDE-BC8A-BABC4331919A</s0:uuid>
           </s0:Acepta>
         </s0:aceptacion>
         <s0:rechazo>
           <s0:Rechaza>
-            <s0:status>202</s0:status>
+            <s0:status>1001</s0:status>
             <s0:uuid>1A2B3C4D-1111-2222-3333-444455556666</s0:uuid>
           </s0:Rechaza>
         </s0:rechazo>

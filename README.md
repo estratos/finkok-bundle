@@ -525,10 +525,11 @@ Puntos de extensión:
 - **`SoapTransportInterface`**: sustituye el transporte (por ejemplo para añadir un
   cliente HTTP propio con mTLS o un interceptor de trazas).
 - **`CsdEncoderInterface`**: cambia cómo se codifican el `.cer` y el `.key` para el
-  método `cancel`. El codificador por defecto (`RawFileCsdEncoder`) hace
-  `base64` del contenido del archivo **una sola vez**; si tu cuenta requiere el
-  proceso antiguo de PEM + cifrado DES3 con la contraseña del panel, implementa
-  esta interfaz y regístrala como `finkok.csd_encoder`.
+  método `cancel`. El codificador por defecto (`PanelEncryptedCsdEncoder`)
+  reproduce el proceso que documenta Finkok: PEM con la contraseña de la llave,
+  cifrado en DES3 con la del panel y `base64` una sola vez, con el certificado
+  enviado con sus encabezados PEM. `RawFileCsdEncoder` queda como salida de
+  emergencia para cuentas que aceptan el `base64` directo.
 - **`CredentialsProviderInterface`**: es el punto por el que tu aplicación aporta
   los perfiles. Si no registras ninguno, el contenedor compila pero cualquier uso
   falla con un mensaje que explica cómo registrarlo.
@@ -561,6 +562,17 @@ Puntos que provocan la mayoría de los incidentes en producción:
 10. **Retimbrado en el mismo mes.** La cancelación con motivo 01 requiere el UUID
     del comprobante que sustituye al cancelado; los motivos 02, 03 y 04 no lo
     admiten (el bundle lo valida antes de enviar).
+11. **El 201 no es una cancelación.** Confirma siempre con `get_sat_status()`. El
+    bundle no da por cancelado un comprobante cuyo `EstatusCancelacion` no lo
+    confirme: usa `isRequestAccepted()`, `isCancelled()` e `isInProcess()`.
+12. **DEMO tiene sus propios tiempos.** Hay que esperar de 1 a 5 minutos tras
+    timbrar (si no, error 205); el paso a «cancelable con aceptación» tarda unos
+    30 minutos y la aceptación del receptor se resuelve sola a los 5 minutos
+    («Plazo vencido»). Detalle en [docs/errores.md](docs/errores.md).
+13. **Para cancelar no necesitas enviar el CSD.** Los parámetros `cer` y `key` son
+    opcionales: si el perfil no los tiene, el bundle los omite y Finkok usa el
+    certificado del panel. Si sí los envías, el bundle aplica el proceso
+    documentado (PEM + DES3 con la contraseña del panel + base64).
 
 ## Seguridad
 
@@ -606,6 +618,10 @@ Implementado y verificado contra los servidores de Finkok:
 
 Fuera del alcance de esta entrega, candidatos naturales para siguientes versiones:
 
+- **`sign_cancel`**: la otra vía documentada para cancelar. Firma con los CSD
+  cargados en el panel de Finkok, así que no hay que enviar la llave privada.
+- **`get_related`**: lista los UUID relacionados de un comprobante, útil para
+  entender un «no cancelable».
 - **`cancel_signature`**, `accept_reject_signature` y `get_related_signature`: las
   variantes que reciben el XML de cancelación ya firmado, sin compartir el CSD.
 - Variantes `out_*` (`out_cancel`, `out_accept_reject`, `get_out_*`) para cancelar

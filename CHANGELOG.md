@@ -25,6 +25,13 @@ proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
   configuración.
 - DTOs inmutables para cada respuesta y catálogo `ErrorCode` con los 24 códigos
   de Finkok, su descripción y su pista de solución.
+- Catálogo `CancellationStatusCode` con los 28 códigos de cancelación
+  documentados (201-212 y `no_cancelable`, las validaciones de petición 300-314 y
+  los errores propios 704, 708, 711, 798 y 799) y catálogo `AcceptRejectStatus`
+  con los códigos 1000-1006 exclusivos del método `accept_reject`.
+- Codificador CSD que reproduce el proceso documentado: la llave se cifra en DES3
+  con la contraseña del panel y el certificado se envía en base64 con sus
+  encabezados PEM.
 - Excepciones tipadas: `TransportException`, `SoapFaultException`,
   `UnexpectedResponseException`, `ApiException`, `ValidationException`,
   `ConfigurationException` y `ProfileNotFoundException`.
@@ -35,7 +42,7 @@ proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
   códigos transitorios.
 - Extensión de Symfony y compiler pass que reutilizan el cliente HTTP, el logger y
   el proveedor de credenciales de la aplicación cuando existen.
-- 189 pruebas offline con `MockHttpClient` y 4 pruebas de contrato contra los
+- 219 pruebas offline con `MockHttpClient` y 4 pruebas de contrato contra los
   servidores reales de Finkok.
 - Documentación en español: `README.md` y `docs/errores.md`.
 

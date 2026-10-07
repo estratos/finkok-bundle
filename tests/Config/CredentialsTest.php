@@ -9,6 +9,7 @@ use Estratos\FinkokBundle\Config\Environment;
 use Estratos\FinkokBundle\Config\Service;
 use Estratos\FinkokBundle\Exception\ConfigurationException;
 use Estratos\FinkokBundle\Tests\Concerns\ManagesTempFiles;
+use Estratos\FinkokBundle\Tests\Fakes\RecordingCsdEncoder;
 use PHPUnit\Framework\TestCase;
 
 final class CredentialsTest extends TestCase
@@ -66,25 +67,44 @@ final class CredentialsTest extends TestCase
         $credentials->requireTaxpayerId();
     }
 
-    public function testCodificaElCsdDeFormaPerezosaYSoloSiEstaConfigurado(): void
+    public function testCodificaElCsdDeFormaPerezosaYLePasaLaContrasenaDelPanel(): void
     {
         $cerPath = $this->temporaryFile('DER-DEL-CERTIFICADO', 'emisor.cer');
         $keyPath = $this->temporaryFile('DER-DE-LA-LLAVE', 'emisor.key');
+        $encoder = new RecordingCsdEncoder();
 
         $credentials = new Credentials(
             name: 'con-csd',
-            username: 'usuario',
-            password: 'clave',
+            username: 'usuario@demo.com',
+            password: 'clave-del-panel',
             taxpayerId: 'EKU9003173C9',
             environment: Environment::Demo,
             certificate: $cerPath,
             privateKey: $keyPath,
-            privateKeyPassphrase: '12345678a',
+            privateKeyPassphrase: 'clave-de-la-llave',
+            csdEncoder: $encoder,
         );
 
         self::assertTrue($credentials->hasCsd());
-        self::assertSame(base64_encode('DER-DEL-CERTIFICADO'), $credentials->certificateBase64());
-        self::assertSame(base64_encode('DER-DE-LA-LLAVE'), $credentials->privateKeyBase64());
+        self::assertSame([], $encoder->calls, 'El CSD no debe leerse hasta que se necesite.');
+
+        self::assertSame('certificado-codificado', $credentials->certificateBase64());
+        self::assertSame('llave-codificada', $credentials->privateKeyBase64());
+        self::assertSame('llave-codificada', $credentials->privateKeyBase64(), 'El resultado se memoriza.');
+
+        self::assertCount(2, $encoder->calls, 'Cada archivo se codifica una sola vez.');
+
+        self::assertSame('certificado', $encoder->calls[0]['metodo']);
+        self::assertSame($cerPath, $encoder->calls[0]['valores'][0]);
+
+        self::assertSame('llave', $encoder->calls[1]['metodo']);
+        self::assertSame($keyPath, $encoder->calls[1]['valores'][0]);
+        self::assertSame('clave-de-la-llave', $encoder->calls[1]['valores'][1], 'La contraseña propia del CSD.');
+        self::assertSame(
+            'clave-del-panel',
+            $encoder->calls[1]['valores'][2],
+            'Finkok descifra la llave con la contraseña del panel, así que hay que pasársela.',
+        );
     }
 
     public function testSinCsdNoHayPayloads(): void

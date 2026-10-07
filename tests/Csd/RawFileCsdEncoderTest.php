@@ -9,22 +9,20 @@ use Estratos\FinkokBundle\Exception\ValidationException;
 use Estratos\FinkokBundle\Tests\Concerns\ManagesTempFiles;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Codificador alternativo: base64 del archivo tal cual, sin el cifrado DES3 que
+ * documenta Finkok. Se conserva como salida de emergencia.
+ */
 final class RawFileCsdEncoderTest extends TestCase
 {
     use ManagesTempFiles;
-
-    private const PEM = <<<'PEM'
-        -----BEGIN CERTIFICATE-----
-        TUlJQ0FEQ0NBQUtDQVFBd0RRWUpLb1pJaHZjTkFRRUxCUUF3RFFZSktvWklodmNO
-        -----END CERTIFICATE-----
-        PEM;
 
     protected function tearDown(): void
     {
         $this->cleanupTemporaryFiles();
     }
 
-    public function testCodificaUnArchivoDerUnaSolaVezEnBase64(): void
+    public function testCodificaElContenidoUnaSolaVezEnBase64(): void
     {
         $encoder = new RawFileCsdEncoder();
         $path = $this->temporaryFile("\x30\x82\x01\x00DER-BINARIO", 'emisor.cer');
@@ -35,28 +33,24 @@ final class RawFileCsdEncoderTest extends TestCase
         self::assertSame("\x30\x82\x01\x00DER-BINARIO", base64_decode($encoded, true));
     }
 
-    public function testConvierteUnCertificadoPemADerAntesDeCodificar(): void
+    public function testNoDobleCodificaElContenido(): void
     {
         $encoder = new RawFileCsdEncoder();
 
-        $encoded = $encoder->encodeCertificate(self::PEM);
+        $encoded = $encoder->encodeCertificate('DER-DE-PRUEBA');
 
-        self::assertStringNotContainsString('BEGIN CERTIFICATE', base64_decode($encoded, true) ?: '');
-        self::assertStringStartsWith('MII', base64_decode($encoded, true) ?: '');
-
-        // El contenido del fixture no es un DER real, así que se comprueba que la
-        // armadura PEM se eliminó en lugar del valor exacto.
-        self::assertStringNotContainsString('-----', (string) base64_decode($encoded, true));
+        self::assertSame(base64_encode('DER-DE-PRUEBA'), $encoded);
+        self::assertStringNotContainsString(base64_encode(base64_encode('DER-DE-PRUEBA')), $encoded);
     }
 
-    public function testLaLlaveSeEnviaSinDescifrarYUnaSolaVez(): void
+    public function testLaLlaveSeEnviaSinCifrarYSinUsarLasContrasenas(): void
     {
         $encoder = new RawFileCsdEncoder();
-        $path = $this->temporaryFile('DER-DE-LA-LLAVE-CIFRADA', 'emisor.key');
+        $path = $this->temporaryFile('DER-DE-LA-LLAVE', 'emisor.key');
 
-        $encoded = $encoder->encodePrivateKey($path, 'contraseña-de-la-llave');
+        $encoded = $encoder->encodePrivateKey($path, 'contrasena-de-la-llave', 'contrasena-del-panel');
 
-        self::assertSame(base64_encode('DER-DE-LA-LLAVE-CIFRADA'), $encoded);
+        self::assertSame(base64_encode('DER-DE-LA-LLAVE'), $encoded);
     }
 
     public function testFallaConContenidoVacio(): void
@@ -64,14 +58,12 @@ final class RawFileCsdEncoderTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessageMatches('/está vacío/');
 
-        (new RawFileCsdEncoder())->encodeCertificate('   ');
+        (new RawFileCsdEncoder())->encodePrivateKey('   ', null, 'panel');
     }
 
     public function testUnContenidoQueNoEsArchivoSeTrataComoBytesEnMemoria(): void
     {
-        $encoder = new RawFileCsdEncoder();
-
-        $encoded = $encoder->encodeCertificate("\x00\x01BINARIO-EN-MEMORIA");
+        $encoded = (new RawFileCsdEncoder())->encodeCertificate("\x00\x01BINARIO-EN-MEMORIA");
 
         self::assertSame("\x00\x01BINARIO-EN-MEMORIA", base64_decode($encoded, true));
     }

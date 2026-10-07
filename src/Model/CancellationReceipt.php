@@ -87,6 +87,31 @@ final class CancellationReceipt implements FinkokResultInterface
     }
 
     /**
+     * Reconoce el código 300 («Usuario no válido») que este Web Service usa en
+     * `CodEstatus`, además de los textos que ya detecta la implementación común.
+     */
+    protected function isCredentialStatusCode(): bool
+    {
+        return CancellationStatusCode::InvalidUser === $this->cancellationStatusCode();
+    }
+
+    /**
+     * UUIDs a los que Finkok aceptó la petición (201, 202 u 798).
+     *
+     * Ojo: no implica cancelación definitiva. Para eso usa
+     * {@see self::cancelledUuids()} o confirma con `get_sat_status()`.
+     *
+     * @return list<string>
+     */
+    public function acceptedUuids(): array
+    {
+        return array_values(array_filter(array_map(
+            static fn (CancellationFolio $folio): ?string => $folio->isRequestAccepted() ? $folio->uuid : null,
+            $this->folios,
+        )));
+    }
+
+    /**
      * `true` cuando el SAT ya emitió el acuse de cancelación.
      */
     public function hasAcknowledgment(): bool
@@ -95,8 +120,11 @@ final class CancellationReceipt implements FinkokResultInterface
     }
 
     /**
-     * `true` cuando la cancelación quedó en proceso y depende de la aceptación
-     * del receptor (códigos 204/205).
+     * `true` cuando algún folio quedó en proceso, normalmente a la espera de la
+     * aceptación del receptor.
+     *
+     * El «en proceso» no viene en el código de la petición sino en el texto
+     * `EstatusCancelacion`, así que se consulta en cada folio.
      */
     public function isInProcess(): bool
     {
@@ -147,11 +175,7 @@ final class CancellationReceipt implements FinkokResultInterface
     public function rejectedUuids(): array
     {
         return array_values(array_filter(array_map(
-            static fn (CancellationFolio $folio): ?string => null !== $folio->uuid
-                && !$folio->isCancellationAcknowledged()
-                && null !== $folio->statusUuid
-                ? $folio->uuid
-                : null,
+            static fn (CancellationFolio $folio): ?string => $folio->isRejected() ? $folio->uuid : null,
             $this->folios,
         )));
     }

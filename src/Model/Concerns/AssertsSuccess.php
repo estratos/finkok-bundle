@@ -57,16 +57,19 @@ trait AssertsSuccess
      * `true` cuando Finkok rechazó la petición por credenciales inválidas.
      *
      * Los dos Web Services lo reportan de forma distinta: el de timbrado usa la
-     * incidencia 300 («El usuario o contraseña son inválidos») y el de
-     * cancelación responde `CodEstatus`/`error` con el texto
-     * «Invalid Username or Password». Este método unifica ambos casos.
+     * incidencia 300 («El usuario o contraseña son inválidos»); el de cancelación
+     * responde el código 300 (`CodEstatus`) o el texto «Invalid Username or
+     * Password» en `error`. Este método unifica los tres casos; las
+     * implementaciones reconocen sus propios códigos con
+     * {@see self::isCredentialStatusCode()}.
      *
      * Causas habituales: usuario o contraseña incorrectos, o usar la URL de un
      * ambiente con las credenciales del otro.
      */
     public function isCredentialError(): bool
     {
-        if ($this->getIncidences()->hasErrorCode(ErrorCode::InvalidCredentials)) {
+        if ($this->isCredentialStatusCode()
+            || $this->getIncidences()->hasErrorCode(ErrorCode::InvalidCredentials)) {
             return true;
         }
 
@@ -83,6 +86,16 @@ trait AssertsSuccess
             && (str_contains($haystack, 'password')
                 || str_contains($haystack, 'username')
                 || str_contains($haystack, 'contraseña'));
+    }
+
+    /**
+     * Punto de extensión para que un resultado reconozca sus propios códigos de
+     * credenciales. El Web Service de cancelación responde 300 («Usuario no
+     * válido») en `CodEstatus`, un valor que el texto por sí solo no delata.
+     */
+    protected function isCredentialStatusCode(): bool
+    {
+        return false;
     }
 
     /**

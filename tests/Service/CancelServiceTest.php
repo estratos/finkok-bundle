@@ -8,6 +8,7 @@ use Estratos\FinkokBundle\Config\Credentials;
 use Estratos\FinkokBundle\Config\CredentialsProvider;
 use Estratos\FinkokBundle\Config\EndpointResolver;
 use Estratos\FinkokBundle\Config\Environment;
+use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
 use Estratos\FinkokBundle\Exception\ValidationException;
 use Estratos\FinkokBundle\Model\AcceptRejectAnswer;
 use Estratos\FinkokBundle\Model\CancellationReason;
@@ -52,6 +53,9 @@ final class CancelServiceTest extends TestCase
                     environment: Environment::Demo,
                     certificate: $cer,
                     privateKey: $key,
+                    // Se usa el codificador directo porque esta prueba verifica el
+                    // transporte del CSD, no su cifrado (eso lo cubre su propio test).
+                    csdEncoder: new RawFileCsdEncoder(),
                 ),
             ], 'default'),
         );

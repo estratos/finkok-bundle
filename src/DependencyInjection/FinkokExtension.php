@@ -8,7 +8,7 @@ use Estratos\FinkokBundle\Config\EndpointResolver;
 use Estratos\FinkokBundle\Contract\CancelServiceInterface;
 use Estratos\FinkokBundle\Contract\StampServiceInterface;
 use Estratos\FinkokBundle\Csd\CsdEncoderInterface;
-use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
+use Estratos\FinkokBundle\Csd\PanelEncryptedCsdEncoder;
 use Estratos\FinkokBundle\DependencyInjection\Compiler\WiringPass;
 use Estratos\FinkokBundle\Http\HttpClientFactory;
 use Estratos\FinkokBundle\Service\CancelService;
@@ -51,7 +51,7 @@ final class FinkokExtension extends Extension
 
     private function registerCsdEncoder(ContainerBuilder $container): void
     {
-        $container->register('finkok.csd_encoder', RawFileCsdEncoder::class)
+        $container->register('finkok.csd_encoder', PanelEncryptedCsdEncoder::class)
             ->setPublic(false);
 
         // Alias de conveniencia para autowiring y para permitir decorar el

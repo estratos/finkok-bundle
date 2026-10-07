@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Estratos\FinkokBundle\Config;
 
 use Estratos\FinkokBundle\Csd\CsdEncoderInterface;
-use Estratos\FinkokBundle\Csd\RawFileCsdEncoder;
+use Estratos\FinkokBundle\Csd\PanelEncryptedCsdEncoder;
 use Estratos\FinkokBundle\Exception\ConfigurationException;
 
 /**
@@ -43,7 +43,7 @@ final class Credentials implements CredentialsInterface
         private readonly array $endpoints = [],
         ?CsdEncoderInterface $csdEncoder = null,
     ) {
-        $this->csdEncoder = $csdEncoder ?? new RawFileCsdEncoder();
+        $this->csdEncoder = $csdEncoder ?? new PanelEncryptedCsdEncoder();
 
         if ('' === trim($username)) {
             throw new ConfigurationException(sprintf('El perfil "%s" no define el usuario de Finkok.', $name));
@@ -186,6 +186,8 @@ final class Credentials implements CredentialsInterface
         $this->privateKeyPayload = $this->csdEncoder->encodePrivateKey(
             (string) $this->privateKey,
             $this->privateKeyPassphrase,
+            // Finkok descifra la llave con la contraseña del panel.
+            $this->password,
         );
     }
 }
