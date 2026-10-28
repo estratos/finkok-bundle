@@ -7,7 +7,7 @@
         <s0:sat>
           <s0:DetallesValidacionEFOS/>
           <s0:EsCancelable>Cancelable con aceptación</s0:EsCancelable>
-          <s0:ValidacionEFOS>100</s0:ValidacionEFOS>
+          <s0:ValidacionEFOS>200</s0:ValidacionEFOS>
           <s0:CodigoEstatus>S - Comprobante obtenido satisfactoriamente.</s0:CodigoEstatus>
           <s0:Estado>Vigente</s0:Estado>
           <s0:EstatusCancelacion/>

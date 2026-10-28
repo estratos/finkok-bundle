@@ -7,6 +7,18 @@ proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+### Corregido
+
+- `SatStatusDetails::isListedAsEfos()` leía la tabla de `ValidacionEFOS` **al revés**:
+  devolvía `true` con `200`/`201` —que el SAT documenta como «no listado»— y `false`
+  con `100`/`101`/`104`, que son los códigos con los que el emisor **sí** aparece en el
+  listado de EFOS. Ahora `isListedAsEfos()` es `true` sólo para `100`/`101`/`104`, y se
+  agrega `hasListedThirdParty()` para el caso «a cuenta de terceros» (`102`/`103`, donde
+  el emisor directo no está listado). Fuente: aviso del SAT al publicar el servicio v1.3
+  (`100` = se encontró en el listado EFOS, `200` = no se encontró) y la tabla de códigos
+  de la v1.4. La documentación (`README`, `docs/errores.md`) y el fixture
+  `get-sat-status-active` quedan alineados, y hay pruebas para cada código.
+
 ## [1.0.0] - 2026-10-05
 
 ### Añadido

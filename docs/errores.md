@@ -146,7 +146,14 @@ Campos del detalle (`SatStatusDetails`):
 | `Estado` | `Vigente` / `Cancelado` | `isActive()` / `isCancelled()` |
 | `EsCancelable` | `Cancelable con aceptación` / `Cancelable sin aceptación` / `No cancelable` | `isCancellable()`, `requiresReceiverAcceptance()` |
 | `EstatusCancelacion` | `Cancelado`, `En proceso`, `Solicitud rechazada`, `Plazo vencido` | `cancellationStatus` |
-| `ValidacionEFOS` | `100`, `101`, `200`, `201` | `isListedAsEfos()` (200/201) |
+| `ValidacionEFOS` | `100`, `101`, `104` = el emisor está listado · `102`, `103` = está listado un tercero, no el emisor · `200`, `201` = no está listado | `isListedAsEfos()`, `hasListedThirdParty()` |
+
+> ⚠️ **`ValidacionEFOS` al derecho.** Los códigos que **sí** listan al emisor son `100`, `101` y `104`;
+> `200` y `201` significan lo contrario («no se encontró en el listado») y `102`/`103` son el caso
+> «a cuenta de terceros». El SAT lo documentó así al publicar la v1.3 del servicio (`100` = se
+> encontró en listado EFOS, `200` = no se encontró) y la v1.4 agregó los códigos finos. Este bundle
+> tenía la tabla al revés hasta la corrección del `CHANGELOG` (`isListedAsEfos()` devolvía `true` con
+> `200`/`201`).
 
 ---
 

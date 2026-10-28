@@ -343,7 +343,8 @@ $status->isActive();       // Vigente
 $status->isCancelled();    // Cancelado
 $status->isCancellable();  // admite cancelación
 $status->details?->requiresReceiverAcceptance(); // necesita aceptación del receptor
-$status->details?->isListedAsEfos();             // listado EFOS 200/201
+$status->details?->isListedAsEfos();             // emisor en el listado EFOS (100/101/104)
+$status->details?->hasListedThirdParty();        // «a cuenta de terceros» listado (102/103)
 ```
 
 Si tienes el XML a la mano, no hace falta transcribir nada: `getStatusOf()` toma

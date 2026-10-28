@@ -20,7 +20,12 @@ final class SatStatusDetails
         public readonly ?string $state = null,
         /** `EstatusCancelacion`: "Cancelado", "En proceso", "Solicitud rechazada", … */
         public readonly ?string $cancellationStatus = null,
-        /** `ValidacionEFOS`: "100" (no listado), "101", "200", "201". */
+        /**
+         * `ValidacionEFOS`: validación del RFC emisor contra el listado de EFOS del SAT (art. 69-B del
+         * CFF). Códigos del SAT: `100`, `101` y `104` = el emisor está listado; `102` y `103` = el emisor
+         * no está listado pero sí un RFC de terceros («a cuenta de terceros»); `200` y `201` = no
+         * listado. Ver {@see isListedAsEfos()} y {@see hasListedThirdParty()}.
+         */
         public readonly ?string $efosValidation = null,
         /** `DetallesValidacionEFOS`: mensaje complementario de la validación EFOS. */
         public readonly ?string $efosValidationDetails = null,
@@ -84,11 +89,29 @@ final class SatStatusDetails
     }
 
     /**
-     * `true` cuando el comprobante aparece listado como EFOS (empresa que
-     * factura operaciones simuladas) en los códigos 200/201.
+     * `true` cuando el **emisor** aparece en el listado de EFOS (empresas que facturan operaciones
+     * simuladas, art. 69-B del CFF).
+     *
+     * ⚠️ Los códigos que listan al emisor son `100`, `101` y `104`. `200`/`201` significan lo
+     * contrario —**no** está listado— y `102`/`103` son el caso de un tercero (ver
+     * {@see hasListedThirdParty()}). Documentación del SAT del servicio de consulta: en la v1.3,
+     * `100` = se encontró en el listado y `200` = no se encontró; la v1.4 agrega `101`/`104` como
+     * «listado» y `102`/`103` como «listado a cuenta de terceros».
      */
     public function isListedAsEfos(): bool
     {
-        return null !== $this->efosValidation && \in_array(trim($this->efosValidation), ['200', '201'], true);
+        return null !== $this->efosValidation
+            && \in_array(trim($this->efosValidation), ['100', '101', '104'], true);
+    }
+
+    /**
+     * `true` cuando el comprobante se emitió **a cuenta de terceros** y el RFC del tercero aparece en
+     * el listado de EFOS (`102` y `103`). En esos códigos el emisor directo **no** está listado; para
+     * eso está {@see isListedAsEfos()}.
+     */
+    public function hasListedThirdParty(): bool
+    {
+        return null !== $this->efosValidation
+            && \in_array(trim($this->efosValidation), ['102', '103'], true);
     }
 }
